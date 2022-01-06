@@ -5,6 +5,7 @@ import core.routing.*
 import core.simulator.Time
 import utils.toNonNegativeInt
 import java.io.*
+import java.util.*
 
 /**
  * Created on 29-08-2017
@@ -48,7 +49,7 @@ class InterdomainTopologyReader(reader: Reader, private val forcedMRAI: Time? = 
             }
 
             // TODO @refactor - make this case sensitive
-            val protocol = when (protocolLabel.toLowerCase()) {
+            val protocol = when (protocolLabel.lowercase(Locale.getDefault())) {
                 "bgp" -> BGP(mrai)
                 "ssbgp" -> SSBGP(mrai)
                 "issbgp" -> ISSBGP(mrai)

@@ -1,44 +1,38 @@
 package core.routing
 
 /**
- * A Topology is an high-level abstraction of a network composed of nodes and their
- * interconnections.
+ * 拓扑是由节点及其互连组成的网络的高级抽象。
  *
- * The topology class is immutable. That is, nodes and links can not be added or removed from the
- * topology. A topology must be built using a topology builder, @see [TopologyBuilder].
+ * 拓扑类是不可变的。也就是说，不能在拓扑中添加或删除节点和链接。必须使用拓扑生成器生成拓扑，@请参阅[TopologyBuilder]。
  *
- * Each node in a topology is uniquely identified by its ID. The topology provides access to its
- * nodes from an ID through its [get] operator.
+ * 拓扑中的每个节点都由其ID唯一标识。拓扑通过其[get]方法提供从ID访问其节点的权限。
  *
- * @property size      the number of nodes in the topology
- * @property linkCount the number of links in the topology
- * @property nodes     collection containing all nodes in the topology in no particular order
- * @property links     collection containing all links in the topology in no particular order
+ * @property size      拓扑中的节点数
+ * @property linkCount 拓扑中的链接数
+ * @property nodes     包含拓扑中所有节点的集合，无特定顺序
+ * @property links     包含拓扑中所有链接的集合，无特定顺序
  *
- * Created on 16-07-2017.
- *
- * @author David Fialho
  */
 class Topology<R : Route>(private val idToNode: Map<NodeID, Node<R>>) {
 
     /**
-     * Number of nodes in the topology.
+     * 拓扑中的节点数。
      */
     val size: Int = idToNode.size
 
     /**
-     * Number of links in the topology.
+     * 拓扑中的链路数。
      */
     val linkCount: Int
         get() = idToNode.map { it.value.inNeighbors }.count()
 
     /**
-     * Collection containing all nodes in the topology in no particular order.
+     * 包含拓扑中所有节点的集合，没有特定的顺序。
      */
     val nodes: Collection<Node<R>> = idToNode.values
 
     /**
-     * Collection containing all links in the topology in no particular order.
+     * 包含拓扑中所有链接的集合，没有特定的顺序。
      */
     val links: Collection<Link<R>>
         get() {
@@ -55,12 +49,12 @@ class Topology<R : Route>(private val idToNode: Map<NodeID, Node<R>>) {
         }
 
     /**
-     * Returns the node with [id] or null if this topology does not contain any node with [id].
+     * 如果此拓扑不包含任何具有 [id] 的节点，则返回具有 [id] 的节点或 null。
      */
     operator fun get(id: Int): Node<R>? = idToNode[id]
 
     /**
-     * Resets the topology state. It resets the state of all nodes in the topology.
+     * 重置拓扑状态。它重置拓扑中所有节点的状态。
      */
     fun reset() {
         nodes.forEach { it.reset() }
@@ -69,10 +63,10 @@ class Topology<R : Route>(private val idToNode: Map<NodeID, Node<R>>) {
 }
 
 /**
- * Data class to represent an uni-directional link in a topology.
+ * 表示拓扑中单向链路的数据类。
  *
- * @property tail     the node at the tail of the link
- * @property head     the node at the head of the link
- * @property extender the extender used to map routes exported by the head node to the tail node
+ * @property tail     链接尾部的节点
+ * @property head     链接头部的节点
+ * @property extender 用于将头节点导出的路由映射到尾节点的扩展器
  */
 data class Link<R : Route>(val tail: Node<R>, val head: Node<R>, val extender: Extender<R>)

@@ -1,27 +1,21 @@
 package core.routing
 
 /**
- * An [Extender] is a transformation function for routes sent across a link.
+ * [Extender] 是一种通过链路发送的路由转换功能。
  *
- * The Extender interface defines a single method [extend]. Subclasses should implement this
- * method to specify how routes are transformed by this extender.
+ * Extender 接口定义了一个方法 [extend]。子类应实现此方法以指定此扩展程序如何转换路由。
  *
- * Extenders are associated with neighbors. They describe how a route selected at one node is
- * learned at the neighboring node. Ultimately, the extender associated with given neighbor
- * models the export policies of the local node and the import policies of the neighboring node.
+ * 扩展器与邻居相关联。它们描述了如何在相邻节点学习在一个节点选择的路由。
+ * 最终，与给定邻居相关联的扩展器对本地节点的导出策略和邻居节点的导入策略进行建模。
  *
- * @see [bgp.policies] for examples on extender implementations.
+ * @see [bgp.policies] 有关扩展器实现的示例。
  *
- * Created on 19-07-2017
- *
- * @author David Fialho
  */
 interface Extender<R : Route> {
 
     /**
-     * Takes a [route] and returns the extended route obtained from [route], according to the
-     * function implemented by this extender. The output route may depend on the [sender], the
-     * node which sent [route].
+     * 根据这个扩展器实现的功能，取一个[route]并返回从[route]得到的扩展路由。
+     * 输出路由可能取决于 [sender]，发送 [route] 的节点。
      */
     fun extend(route: R, sender: Node<R>): R
 

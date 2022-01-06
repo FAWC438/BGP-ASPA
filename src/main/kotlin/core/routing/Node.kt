@@ -3,63 +3,57 @@ package core.routing
 import core.simulator.Advertiser
 
 /**
- * Alias used for node IDs
- * This makes it easy to change the ID type to long if an Int is too small
+ * 用于节点 ID 的别名
+ * 如果认为 Int 太小，可以将 ID 类型更改为 long
  */
 typealias NodeID = Int
 
 /**
- * A Node is the fundamental element of a topology.
+ * 节点是拓扑的基本元素。
  *
- * A node can represent any entity that is able to speak with other nodes through a common
- * routing protocol. The protocol deployed at each node does not need be exactly the same. The
- * only requirement is that the routes exchanged are of the same type.
+ * 一个节点可以代表任何能够通过公共路由协议与其他节点通话的实体。部署在每个节点的协议不需要完全相同。唯一的要求是交换的路由类型相同。
  *
- * Each node has unique ID. This ID is only unique for nodes within the same topology.
+ * 每个节点都有唯一的 ID。此 ID 仅对于同一拓扑中的节点是唯一的。
  *
- * @property id       the ID of the node, which uniquely identifies it inside a topology
- * @property protocol the protocol deployed by this node
+ * @property id       节点的 ID，在拓扑中唯一标识它
+ * @property protocol 此节点部署的协议
  *
- * Created on 19-07-17
- *
- * @author David Fialho
  */
 class Node<R : Route>(override val id: NodeID, val protocol: Protocol<R>) : Advertiser<R> {
 
     /**
-     * Collection containing the in-neighbors of this node.
+     * 包含此节点的邻居的集合。
      */
     val mutableInNeighbors = ArrayList<Neighbor<R>>()
     val inNeighbors: Collection<Neighbor<R>>
         get() = mutableInNeighbors
 
     /**
-     * Adds a new in-neighbor to this node.
+     * 向这个节点添加一个新的邻居。
      *
-     * @param neighbor the in-neighbor node to add
-     * @param extender the extender used to map routes from this node to the in-neighbor
+     * @param neighbor 要添加的邻居节点
+     * @param extender 用于将路由从该节点映射到相邻节点的扩展器
      */
     fun addInNeighbor(neighbor: Node<R>, extender: Extender<R>) {
         mutableInNeighbors.add(Neighbor(neighbor, extender))
     }
 
     /**
-     * Have this node set [defaultRoute] as its default route and advertise it to in-neighbors
-     * according to its deployed protocol specifications.
+     * 让该节点将 [defaultRoute] 设置为其默认路由，并根据其部署的协议规范将其通告给邻居。
      */
     override fun advertise(defaultRoute: R) {
         protocol.setLocalRoute(this, defaultRoute)
     }
 
     /**
-     * Have this node send a message containing the given [route] to all of its in-neighbors.
+     * 让这个节点向它的所有邻居发送一条包含给定 [route] 的消息。
      */
     fun export(route: R) {
         inNeighbors.forEach { send(route, it) }
     }
 
     /**
-     * Have this node send a messages containing the given [route] to a [neighbor].
+     * 让这个节点将包含给定 [route] 的消息发送到 [neighbor]。
      */
     private fun send(route: R, neighbor: Neighbor<R>) {
         val message = Message(this, neighbor.node, neighbor.extender.extend(route, this))
@@ -68,17 +62,16 @@ class Node<R : Route>(override val id: NodeID, val protocol: Protocol<R>) : Adve
     }
 
     /**
-     * Have this node receive a [message] from an out-neighbor. The [message] is passed through
-     * the routing protocol deployed by this node and processed.
+     * 让该节点从外邻居接收 [message]。 [message]通过本节点部署的路由协议进行处理。
      *
-     * The simulator should invoke this method when it wants to have a message arrive at some node.
+     * 当模拟器想要消息到达某个节点时，它应该调用此方法。
      */
     fun receive(message: Message<R>) {
         protocol.process(message)
     }
 
     /**
-     * Resets this node's state.
+     * 重置此节点的状态。
      */
     override fun reset() {
         protocol.reset()
@@ -86,9 +79,9 @@ class Node<R : Route>(override val id: NodeID, val protocol: Protocol<R>) : Adve
     }
 
     /**
-     * Two nodes are considered equal if they have exactly the same ID.
+     * 如果两个节点具有完全相同的 ID，则认为它们相等。
      *
-     * Subclasses of node should NOT override this method.
+     * 节点的子类不应覆盖此方法。
      */
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -102,7 +95,7 @@ class Node<R : Route>(override val id: NodeID, val protocol: Protocol<R>) : Adve
     }
 
     /**
-     * Follows the equals/hashCode contract.
+     * 遵循 equals/hashCode 规则。
      */
     override fun hashCode(): Int = id
 

@@ -1,31 +1,22 @@
 package core.routing
 
 /**
- * A Route associates a set attributes with a destination.
+ * Route 将一组属性与目的地相关联。
  *
- * In a routing protocol, nodes exchange routes between each other to provide connectivity to
- * each other. The ultimate goal of a routing protocol is to have each node select one or more
- * routes to each that destination.
+ * 在路由协议中，节点之间交换路由以提供彼此的连接。路由协议的最终目标是让每个节点选择一个或多个路由到每个目的地。
  *
- * Routes exchanged in different routing protocols have different attributes. Therefore, each
- * protocol implementation must define their own route implementation. This is the base interface
- * for all route implementations.
+ * 不同路由协议交换的路由具有不同的属性。因此，每个协议实现都必须定义自己的路由实现。这是所有路由实现的基本接口。
  *
- * Routes may be invalid. An invalid route indicates that there is no electable route to the
- * destination. A node selecting an invalid route, indicates the node did not had any valid
- * candidate route to reach the destination. To check whether or not a route is valid, use the
- * [isValid] method.
+ * 路由可能无效。无效路由表示没有可选的路由到目的地。选择无效路由的节点，表明该节点没有任何有效的候选路由到达目的地。
+ * 要检查路由是否有效，请使用 [isValid] 方法。
  *
- * *Warning:* Implementations of the [Route] interface should always be immutable!!
+ * *注意:* [Route] 接口的实现应该总是不可变的！！
  *
- * Created on 19-07-2017
- *
- * @author David Fialho
  */
 interface Route {
 
     /**
-     * Returns true if this route is valid or false if otherwise.
+     * 如果此路由有效，则返回 true，否则返回 false。
      */
     fun isValid(): Boolean
 

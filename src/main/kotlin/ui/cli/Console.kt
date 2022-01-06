@@ -1,9 +1,7 @@
 package ui.cli
 
 /**
- * Created on 30-08-2017
- *
- * @author David Fialho
+ * 用于控制台输出信息
  */
 class Console {
 

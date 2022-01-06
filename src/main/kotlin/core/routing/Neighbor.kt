@@ -3,20 +3,17 @@ package core.routing
 import core.simulator.Connection
 
 /**
- * A Neighbor is a [node] to which a local node sends messages through a [connection].
+ * 邻居是一个[node]，本地节点通过[connection]向其发送消息。
  *
- * Routes sent to a neighbor are extended by the [extender] associated with that neighbor.
+ * 发送到邻居的路由通过与该邻居关联的 [extender] 进行扩展。
  *
- * @property node       the reference to the neighboring node
- * @property extender   the extender to map routes exported from the local node to neighboring node
- * @property connection the connection with neighbor [node], used to send messages to the neighbor
+ * @property node       该相邻节点的引用
+ * @property extender   将本地节点导出的路由映射到相邻节点的扩展器
+ * @property connection 与邻居[node]的连接，用于向邻居发送消息
  *
- * Created on 19-07-17
- *
- * @author David Fialho
  */
-data class Neighbor<R: Route>(
-        val node: Node<R>,
-        val extender: Extender<R>,
-        val connection: Connection<R> = Connection()
+data class Neighbor<R : Route>(
+    val node: Node<R>,
+    val extender: Extender<R>,
+    val connection: Connection<R> = Connection()
 )

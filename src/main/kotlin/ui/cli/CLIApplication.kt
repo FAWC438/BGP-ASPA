@@ -15,11 +15,11 @@ import java.time.Instant
 import kotlin.system.exitProcess
 
 /**
- * Created on 30-08-2017
- *
- * @author David Fialho
+ * 命令行界面应用程序
  */
-object CLIApplication: Application {
+
+
+object CLIApplication : Application {
 
     private val console = Console()
 
@@ -55,8 +55,10 @@ object CLIApplication: Application {
      * @param topologyFile   the file from which the topology will be loaded
      * @param block      the code block to load the topology.
      */
-    override fun <R: Route> loadTopology(topologyFile: File,
-                                         block: () -> Topology<R>): Topology<R> {
+    override fun <R : Route> loadTopology(
+        topologyFile: File,
+        block: () -> Topology<R>
+    ): Topology<R> {
 
         try {
             console.info("Topology file: ${topologyFile.path}.")
@@ -91,7 +93,7 @@ object CLIApplication: Application {
      * @param block the block of code to setup advertisements
      * @return a list containing the advertisements already setup
      */
-    override fun <R: Route> setupAdvertisements(block: () -> List<Advertisement<R>>): List<Advertisement<R>> {
+    override fun <R : Route> setupAdvertisements(block: () -> List<Advertisement<R>>): List<Advertisement<R>> {
 
         try {
             console.info("Setting up advertisements...  ")
@@ -133,7 +135,7 @@ object CLIApplication: Application {
      * @return whatever the [block] returns.
      */
     override fun <T> readAdvertisementsFile(file: File, block: () -> T): T =
-            handleReadingFiles(file, block, name = "advertisements")
+        handleReadingFiles(file, block, name = "advertisements")
 
     /**
      * Handles errors when reading input files and shows a time it took to read the file.
@@ -171,8 +173,10 @@ object CLIApplication: Application {
      * @param seed           the seed of the message delay generator used for the execution
      * @param block          the code block that performs one execution
      */
-    override fun <R: Route> execute(executionID: Int, advertisements: List<Advertisement<R>>,
-                                    seed: Long, block: () -> Unit) {
+    override fun <R : Route> execute(
+        executionID: Int, advertisements: List<Advertisement<R>>,
+        seed: Long, block: () -> Unit
+    ) {
 
         console.info("Executing $executionID (seed=$seed)...  ", inline = true)
         val (duration, _) = timer {

@@ -6,69 +6,68 @@ import core.simulator.Advertisement
 import java.io.File
 
 /**
- * Created on 30-08-2017
- *
- * @author David Fialho
+ * 命令行应用程序接口
  */
 interface Application {
 
     fun launch(args: Array<String>)
 
     /**
-     * Invoked while loading the topology.
+     * 加载拓扑时调用
      *
-     * @param topologyFile the file from which the topology will be loaded
-     * @param block        the code block to load the topology
+     * @param topologyFile 拓扑文件的文件路径
+     * @param block        加载拓扑的代码块
      */
-    fun <R: Route> loadTopology(topologyFile: File, block: () -> Topology<R>): Topology<R>
+    fun <R : Route> loadTopology(topologyFile: File, block: () -> Topology<R>): Topology<R>
 
     /**
-     * Invoked when setting up the advertisements to occur in the simulation. This may imply accessing the filesystem,
-     * which may throw some IO error.
+     * 在设置要在模拟中发生的路由通告时调用。这可能意味着访问文件系统，这可能会引发一些 IO 错误。
      *
-     * @param block the block of code to setup advertisements
-     * @return a list containing the advertisements already setup
+     * @param block 设置路由通告的代码块
+     * @return 包含已设置路由通告的列表
      */
-    fun <R: Route> setupAdvertisements(block: () -> List<Advertisement<R>>): List<Advertisement<R>>
+    fun <R : Route> setupAdvertisements(block: () -> List<Advertisement<R>>): List<Advertisement<R>>
 
     /**
-     * Invoked when reading the stubs file. It returns whatever the [block] returns.
+     * 在读取存根文件时调用。它返回 [block] 返回的任何内容。
      *
-     * @param file  the stubs file that is going to be read, null indicates the file was not read.
-     * @param block the block of code to read stubs file
-     * @return whatever the [block] returns.
+     * @param file  将要读取的存根文件，null 表示文件未被读取。
+     * @param block 读取存根文件的代码块
+     * @return [block] 的返回内容。
      */
     fun <T> readStubsFile(file: File?, block: () -> T): T
 
     /**
-     * Invoked when reading the advertisements file. It returns whatever the [block] returns.
+     * 在读取路由通告文件时调用。它返回 [block] 返回的任何内容。
      *
-     * @param file  the advertisements file that is going to be read
-     * @param block the block of code to read stubs file
-     * @return whatever the [block] returns.
+     * @param file  将要读取的路由通告文件
+     * @param block 读取存根文件的代码块
+     * @return [block] 的返回内容。
      */
     fun <T> readAdvertisementsFile(file: File, block: () -> T): T
 
     /**
-     * Invoked while executing each execution.
+     * 在每次执行时调用。
      *
-     * @param executionID    the identifier of the execution
-     * @param advertisements the advertisements programmed to occur in the simulation
-     * @param seed           the seed of the message delay generator used for the execution
-     * @param block          the code block that performs one execution
+     * @param executionID    执行的标识符
+     * @param advertisements 在模拟中出现的人为设定的路由通告
+     * @param seed           用于执行的消息延迟生成器的随机种子
+     * @param block          执行一次程序的代码块
      */
-    fun <R: Route> execute(executionID: Int, advertisements: List<Advertisement<R>>, seed: Long,
-                           block: () -> Unit)
+    fun <R : Route> execute(
+        executionID: Int, advertisements: List<Advertisement<R>>, seed: Long,
+        block: () -> Unit
+    )
 
     /**
-     * Invoked during a run.
+     * 在一次运行期间调用。
      */
     fun run(runBlock: () -> Unit)
 
     /**
-     * Invoked while metadata is being written to disk.
+     * 在将元数据写入磁盘时调用。
      *
-     * @param file the file where the metadata is going to be written to
+     * @param file 将要写入元数据的文件
      */
     fun writeMetadata(file: File, block: () -> Unit)
 
