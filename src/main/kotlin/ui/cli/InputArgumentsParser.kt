@@ -12,21 +12,16 @@ import java.util.*
 import kotlin.system.exitProcess
 
 
-/**
- * Created on 30-08-2017
- *
- * @author David Fialho
- */
 class InputArgumentsParser {
 
     companion object {
         private val MAIN_COMMAND = "ssbgp-simulator"
 
-        // Information Options
+        // 信息选项
         private val HELP = "help"
         private val VERSION = "version"
 
-        // Execution Options
+        // 执行选项
         private val TOPOLOGY_FILE = "topology"
         private val ADVERTISER = "advertiser"
         private val REPETITIONS = "repetitions"
@@ -50,104 +45,136 @@ class InputArgumentsParser {
         options.apply {
 
             // Information Options
-            addOption(Option.builder("h")
+            addOption(
+                Option.builder("h")
                     .desc("Print help")
                     .required(false)
                     .hasArg(false)
                     .longOpt(HELP)
-                    .build())
-            addOption(Option.builder("V")
+                    .build()
+            )
+            addOption(
+                Option.builder("V")
                     .desc("Print application's version")
                     .required(false)
                     .hasArg(false)
                     .longOpt(VERSION)
-                    .build())
+                    .build()
+            )
 
             // Execution Options
-            addOption(Option.builder("t")
+            addOption(
+                Option.builder("t")
                     .desc("Topology file to simulate with")
                     .hasArg(true)
                     .argName("topology-file")
                     .longOpt(TOPOLOGY_FILE)
-                    .build())
-            addOption(Option.builder("d")
+                    .build()
+            )
+            addOption(
+                Option.builder("d")
                     .desc("ID(s) of node(s) advertising a destination")
                     .hasArgs()
                     .argName("advertisers")
                     .longOpt(ADVERTISER)
-                    .build())
-            addOption(Option.builder("c")
+                    .build()
+            )
+            addOption(
+                Option.builder("c")
                     .desc("Number of executions to run [default: 1]")
                     .hasArg(true)
                     .argName("executions")
                     .longOpt(REPETITIONS)
-                    .build())
-            addOption(Option.builder("o")
+                    .build()
+            )
+            addOption(
+                Option.builder("o")
                     .desc("Directory to place reports [default: working directory]")
                     .hasArg(true)
                     .argName("out-directory")
                     .longOpt(REPORT_DIRECTORY)
-                    .build())
-            addOption(Option.builder("min")
+                    .build()
+            )
+            addOption(
+                Option.builder("min")
                     .desc("Minimum delay applied to the routing messages [default: 1]")
                     .hasArg(true)
                     .argName("mindelay")
                     .longOpt(MIN_DELAY)
-                    .build())
-            addOption(Option.builder("max")
+                    .build()
+            )
+            addOption(
+                Option.builder("max")
                     .desc("Maximum delay applied to the routing messages [default: 1]")
                     .hasArg(true)
                     .argName("maxdelay")
                     .longOpt(MAX_DELAY)
-                    .build())
-            addOption(Option.builder("th")
+                    .build()
+            )
+            addOption(
+                Option.builder("th")
                     .desc("Maximum amount simulation time [default: 1000000]")
                     .hasArg(true)
                     .argName("threshold")
                     .longOpt(THRESHOLD)
-                    .build())
-            addOption(Option.builder("s")
+                    .build()
+            )
+            addOption(
+                Option.builder("s")
                     .desc("Seed used to generate the delays in the first execution")
                     .required(false)
                     .hasArg(true)
                     .argName("threshold")
                     .longOpt(SEED)
-                    .build())
-            addOption(Option.builder("S")
+                    .build()
+            )
+            addOption(
+                Option.builder("S")
                     .desc("Stubs file")
                     .required(false)
                     .hasArg(true)
                     .argName("stubs-file")
                     .longOpt(STUBS)
-                    .build())
-            addOption(Option.builder("rn")
+                    .build()
+            )
+            addOption(
+                Option.builder("rn")
                     .desc("Output data for each individual node")
                     .required(false)
                     .hasArg(false)
                     .longOpt(NODE_REPORT)
-                    .build())
-            addOption(Option.builder("D")
+                    .build()
+            )
+            addOption(
+                Option.builder("D")
                     .desc("File with advertisements")
                     .hasArg(true)
                     .argName("advertise-file")
                     .longOpt(ADVERTISE_FILE)
-                    .build())
-            addOption(Option.builder("meta")
+                    .build()
+            )
+            addOption(
+                Option.builder("meta")
                     .desc("Output metadata file")
                     .hasArg(false)
                     .longOpt(METADATA)
-                    .build())
-            addOption(Option.builder("tr")
+                    .build()
+            )
+            addOption(
+                Option.builder("tr")
                     .desc("Output a trace with the simulation events to a file")
                     .hasArg(false)
                     .longOpt(TRACE)
-                    .build())
-            addOption(Option.builder("mrai")
+                    .build()
+            )
+            addOption(
+                Option.builder("mrai")
                     .desc("Force the MRAI value for all nodes")
                     .hasArg(true)
                     .argName("<mrai>")
                     .longOpt(MRAI)
-                    .build())
+                    .build()
+            )
         }
 
     }
@@ -178,7 +205,7 @@ class InputArgumentsParser {
         commandLine.let {
 
             //
-            // Validate options used
+            // 验证使用的选项
             //
 
             if (it.hasOption(ADVERTISER) && it.hasOption(ADVERTISE_FILE)) {
@@ -188,14 +215,15 @@ class InputArgumentsParser {
             }
 
             //
-            // Parse option values
+            // 解析选项值
             //
 
             val topologyFile = getFile(it, option = TOPOLOGY_FILE).get()
             val advertisers = getManyNonNegativeIntegers(it, option = ADVERTISER, default = emptyList())
             val advertisementsFile = getFile(it, option = ADVERTISE_FILE, default = Optional.empty())
             val repetitions = getPositiveInteger(it, option = REPETITIONS, default = 1)
-            val reportDirectory = getDirectory(it, option = REPORT_DIRECTORY, default = File(System.getProperty("user.dir")))
+            val reportDirectory =
+                getDirectory(it, option = REPORT_DIRECTORY, default = File(System.getProperty("user.dir")))
             val threshold = getPositiveInteger(it, option = THRESHOLD, default = 1_000_000)
             val seed = getLong(it, option = SEED, default = System.currentTimeMillis())
             val stubsFile = getFile(it, option = STUBS, default = Optional.empty())
@@ -205,7 +233,7 @@ class InputArgumentsParser {
             val outputMetadata = commandLine.hasOption(METADATA)
             val outputTrace = commandLine.hasOption(TRACE)
 
-            // Select the initialization based on whether the user specified a set of advertisers or a file
+            // 根据用户指定的是一组通告还是一个文件来选择初始化
             val initializer = if (it.hasOption(ADVERTISER)) {
                 BGPAdvertisementInitializer.with(topologyFile, advertisers.toSet())
             } else {
@@ -234,8 +262,8 @@ class InputArgumentsParser {
         verifyOption(commandLine, option, default)
 
         val value = commandLine.getOptionValue(option)
-        val file = if (value != null) Optional.of(File(value)) else default!!   // See note below
-        // Note: the verifyOption method would throw exception if the option was ot defined and default was null
+        val file = if (value != null) Optional.of(File(value)) else default!!   // 请参阅下面的注释
+        // 注意：如果选项未定义且默认值为 null，则 verify Option 方法将抛出异常
 
         if (file.isPresent && !file.get().isFile) {
             throw InputArgumentsException("The file specified for `$option` does not exist: ${file.get().path}")
@@ -249,9 +277,9 @@ class InputArgumentsParser {
         verifyOption(commandLine, option, default)
 
         val value = commandLine.getOptionValue(option)
-        val directory = if (value != null) File(value) else default!!    // See note below
+        val directory = if (value != null) File(value) else default!!    // 请参阅下面的注释
 
-        // Note: the verifyOption method would throw exception if the option was ot defined and default was null
+        // 注意：如果选项未定义且默认值为 null，则 verify Option 方法将抛出异常
 
         if (!directory.isDirectory) {
             throw InputArgumentsException("The directory specified for `$option` does not exist: ${directory.path}")
@@ -261,16 +289,18 @@ class InputArgumentsParser {
     }
 
     @Throws(InputArgumentsException::class)
-    private fun getManyNonNegativeIntegers(commandLine: CommandLine, option: String,
-                                           default: List<NodeID>? = null): List<NodeID> {
+    private fun getManyNonNegativeIntegers(
+        commandLine: CommandLine, option: String,
+        default: List<NodeID>? = null
+    ): List<NodeID> {
         verifyOption(commandLine, option, default)
 
         val values = commandLine.getOptionValues(option)
 
         try {
             @Suppress("USELESS_ELVIS")
-            // Although the IDE does not recognize it, 'values' can actually be null if the option set. The
-            // documentation for getOptionValues() indicates that it returns null if the option is not set.
+            // 尽管 IDE 无法识别它，但如果设置了该选项，'values' 实际上可以为 null。
+            // getOptionValues() 的文档表明，如果未设置该选项，它将返回 null。
             return values?.map { it.toNonNegativeInt() } ?: default!!  // never null at this point!!
         } catch (numberError: NumberFormatException) {
             throw InputArgumentsException("values for '--$option' must be non-negative integer values")
@@ -284,8 +314,8 @@ class InputArgumentsParser {
         val value = commandLine.getOptionValue(option)
 
         try {
-            return value?.toNonNegativeInt() ?: default!!  // See note below
-            // Note: the verifyOption method would throw exception if the option was ot defined and default was null
+            return value?.toNonNegativeInt() ?: default!!  // 请参阅下面的注释
+            // 注意：如果选项未定义且默认值为 null，则 verify Option 方法将抛出异常
 
         } catch (numberError: NumberFormatException) {
             throw InputArgumentsException("value for '--$option' must be a non-negative integer value")
@@ -299,11 +329,11 @@ class InputArgumentsParser {
         val value = commandLine.getOptionValue(option)
 
         try {
-            val intValue = value?.toInt() ?: default!!  // See note below
-            // Note: the verifyOption method would throw exception if the option was ot defined and default was null
+            val intValue = value?.toInt() ?: default!!  // 请参阅下面的注释
+            // 注意：如果选项未定义且默认值为 null，则 verify Option 方法将抛出异常
 
             if (intValue <= 0) {
-                // Handle error in th
+                // 处理错误
                 throw NumberFormatException()
             }
 
@@ -321,8 +351,8 @@ class InputArgumentsParser {
         val value = commandLine.getOptionValue(option)
 
         try {
-            return value?.toLong() ?: default!!  // See note below
-            // Note: the verifyOption method would throw exception if the option was ot defined and default was null
+            return value?.toLong() ?: default!!  // 请参阅下面的注释
+            // 注意：如果选项未定义且默认值为 null，则 verify Option 方法将抛出异常
 
         } catch (numberError: NumberFormatException) {
             throw InputArgumentsException("Parameter '$option' must be a positive long value: was '$value'")

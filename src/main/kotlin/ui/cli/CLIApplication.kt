@@ -50,10 +50,10 @@ object CLIApplication : Application {
     }
 
     /**
-     * Invoked while loading the topology.
+     * 在加载拓扑时调用。
      *
-     * @param topologyFile   the file from which the topology will be loaded
-     * @param block      the code block to load the topology.
+     * @param topologyFile   将加载的拓扑文件的路径
+     * @param block      加载拓扑的代码块。
      */
     override fun <R : Route> loadTopology(
         topologyFile: File,
@@ -87,11 +87,10 @@ object CLIApplication : Application {
     }
 
     /**
-     * Invoked when setting up the advertisements to occur in the simulation. This may imply accessing the filesystem,
-     * which may throw some IO error.
+     * 在设置要在模拟中发生的路由通告时调用。这可能意味着访问文件系统，这可能会引发一些 IO 错误。
      *
-     * @param block the block of code to setup advertisements
-     * @return a list containing the advertisements already setup
+     * @param block 设置路由通告的代码块
+     * @return 包含已设置的路由通告的列表
      */
     override fun <R : Route> setupAdvertisements(block: () -> List<Advertisement<R>>): List<Advertisement<R>> {
 
@@ -111,16 +110,16 @@ object CLIApplication : Application {
     }
 
     /**
-     * Invoked when reading the stubs file. It returns whatever the [block] returns.
+     * 在读取存根文件时调用。它返回 [block] 返回的任何内容。
      *
-     * @param file  the stubs file that is going to be read
-     * @param block the block of code to read stubs file
-     * @return whatever the [block] returns.
+     * @param file  将要读取的存根文件
+     * @param block 读取存根文件的代码块
+     * @return  [block] 返回的任何内容。
      */
     override fun <T> readStubsFile(file: File?, block: () -> T): T {
 
         return if (file == null) {
-            // File is not going to be read
+            // 文件不会被读取
             block()
         } else {
             handleReadingFiles(file, block, name = "stubs")
@@ -128,17 +127,17 @@ object CLIApplication : Application {
     }
 
     /**
-     * Invoked when reading the advertisements file. It returns whatever the [block] returns.
+     * 在读取路由通告文件时调用。它返回 [block] 返回的任何内容。
      *
-     * @param file  the advertisements file that is going to be read
-     * @param block the block of code to read stubs file
-     * @return whatever the [block] returns.
+     * @param file  将要读取的路由通告文件
+     * @param block 读取存根文件的代码块
+     * @return [block] 返回的任何内容。
      */
     override fun <T> readAdvertisementsFile(file: File, block: () -> T): T =
         handleReadingFiles(file, block, name = "advertisements")
 
     /**
-     * Handles errors when reading input files and shows a time it took to read the file.
+     * 在读取输入文件时处理错误并显示读取文件所花费的时间。
      */
     private fun <T> handleReadingFiles(file: File, block: () -> T, name: String): T {
 
@@ -152,13 +151,13 @@ object CLIApplication : Application {
             return value
 
         } catch (exception: ParseException) {
-            console.print() // must print a new line here
+            console.print() // 必须在这里打印一个新行
             console.error("Failed to parse $name file '${file.name}'")
             console.error("Cause: ${exception.message ?: "no information available"}")
             exitProcess(1)
 
         } catch (exception: IOException) {
-            console.print() // must print a new line here
+            console.print() // 必须在这里打印一个新行
             console.error("Failed to access $name file '${file.name}' due to an IO error")
             console.error("Cause: ${exception.message ?: "no information available"}")
             exitProcess(1)
@@ -166,12 +165,12 @@ object CLIApplication : Application {
     }
 
     /**
-     * Invoked while executing each execution.
+     * 在执行每次执行时调用。
      *
-     * @param executionID    the identifier of the execution
-     * @param advertisements the advertisements that will occur during the execution
-     * @param seed           the seed of the message delay generator used for the execution
-     * @param block          the code block that performs one execution
+     * @param executionID    执行的标识符
+     * @param advertisements 执行过程中会出现的路由通告
+     * @param seed           用于执行的消息延迟生成器的种子
+     * @param block          执行一次程序的代码块
      */
     override fun <R : Route> execute(
         executionID: Int, advertisements: List<Advertisement<R>>,
@@ -186,7 +185,7 @@ object CLIApplication : Application {
     }
 
     /**
-     * Invoked during a run.
+     * 在一次运行期间调用。
      */
     override fun run(runBlock: () -> Unit) {
 
@@ -206,9 +205,9 @@ object CLIApplication : Application {
     }
 
     /**
-     * Invoked while metadata is being written to disk.
+     * 在将元数据写入磁盘时调用。
      *
-     * @param file the file where the metadata is going to be written to
+     * @param file 将要写入元数据的文件
      */
     override fun writeMetadata(file: File, block: () -> Unit) {
 
@@ -220,7 +219,7 @@ object CLIApplication : Application {
             console.print("done in $duration seconds")
 
         } catch (exception: IOException) {
-            console.print() // must print a new line here
+            console.print() // 必须在这里打印一个新行
             console.error("Failed to metadata due to an IO error.")
             console.error("Cause: ${exception.message ?: "No information available"}")
             exitProcess(4)
