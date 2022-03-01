@@ -8,12 +8,12 @@ import core.routing.emptyPath
  * Created on 20-07-2017
  *
  * @author David Fialho
+ * 一条 BGP 路由由两个属性组成：LOCAL-PREF 和 AS-PATH。
+ * LOCAL-PREF 由每个节点在本地分配，并指示该节点分配给每个路由的优先级。
+ * AS-PATH 包含路由从原始广告者到持有该路由的当前节点所经过的节点序列。
  *
- * A BGP route is composed of two attributes: the LOCAL-PREF and the AS-PATH. The LOCAL-PREF is assigned locally by
- * each node and indicates the degree of preference that node assigns to each route. The AS-PATH contains the
- * sequence of nodes traversed by the route from the original advertiser to the current node holding the route.
- *
- * BGP routes are always immutable instances!
+ * BGPRoute始终是不可变的实例！
+
  */
 sealed class BGPRoute : Route {
 
@@ -23,31 +23,31 @@ sealed class BGPRoute : Route {
     companion object Factory {
 
         /**
-         * Returns a BGP route with the specified LOCAL-PREF and AS-PATH.
+         * 返回具有指定 LOCAL-PREF 和 AS-PATH 的 BGP 路由。
          */
         fun with(localPref: Int, asPath: Path): BGPRoute = ValidBGPRoute(localPref, asPath)
 
         /**
-         * Returns an invalid BGP route.
+         * 返回无效的 BGP 路由。
          */
         fun invalid(): BGPRoute = InvalidBGPRoute
 
         /**
-         * Returns a self BGP route. A self BGP route is the BGP route with the highest preference possible.
+         * 返回自 BGP 路由。self BGP 路由是具有最高优先级的 BGP 路由。
          */
         fun self(): BGPRoute = SelfBGPRoute
 
     }
 
     /**
-     * An implementation for a valid BGP route.
+     * 有效 BGP 路由的实现。
      */
     private data class ValidBGPRoute(override val localPref: Int, override val asPath: Path) : BGPRoute() {
         override fun isValid(): Boolean = true
     }
 
     /**
-     * An implementation for a invalid BGP route.
+     * 无效 BGP 路由的实现。
      */
     private object InvalidBGPRoute : BGPRoute() {
         override val localPref: Int = Int.MIN_VALUE
@@ -57,7 +57,7 @@ sealed class BGPRoute : Route {
     }
 
     /**
-     * An implementation for a self BGP route. A self BGP route is the BGP route with the highest preference possible.
+     * self BGP 路由的实现。self BGP 路由是具有最高优先级的 BGP 路由。
      */
     private object SelfBGPRoute : BGPRoute() {
         override val localPref: Int = Int.MAX_VALUE
@@ -71,8 +71,7 @@ sealed class BGPRoute : Route {
     }
 
     /**
-     * Two BGP routes are considered equal if and only if they have the same exact local preference value and the
-     * same AS path
+     * 当且仅当两条 BGP 路由具有完全相同的本地优先级值和相同的 AS 路径时，它们才被认为是相等的
      */
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -100,16 +99,15 @@ sealed class BGPRoute : Route {
 }
 
 /**
- * Compare function for BGP routes. It compares the preference of two BGP routes.
+ * BGP 路由的比较功能。它比较两条 BGP 路由的优先级。
  *
- * The preference of a BGP route is determined based on the following attributes:
+ * BGP路由的优先级由以下属性决定：
  *
  *  1. the LOCAL-PREF
  *  2. the length of the AS-PATH
  *  3. the ID of the next-hop node
  *
- * @return positive value if route1 is preferred to route 2; zero if they have the same preference; and negative
- * value if route2 is preferred to route1
+ * @return 如果 route1 优于 route 2，则为正值；如果他们有相同的偏好，则为零；如果 route2 优于 route1，则为负值
  */
 fun bgpRouteCompare(route1: BGPRoute, route2: BGPRoute): Int {
 
