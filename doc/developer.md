@@ -214,9 +214,9 @@ Notice that we do not include any code here to store or select routes. Route sto
 processes. They are not specific to a certain routing protocol. That is why these operations were moved to their own
 utility classes. See [Routing Table and Route Selector](#routing-table-and-route-selector) for more details.
 
-| Note |
-|:---| 
-|Remember that each node is associated with a routing protocol. Protocol implementations are supposed to have some kind of state. For this reason, each node should be assigned a different instance of a protocol implementation.|
+| Note                                                                                                                                                                                                                              |
+|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Remember that each node is associated with a routing protocol. Protocol implementations are supposed to have some kind of state. For this reason, each node should be assigned a different instance of a protocol implementation. |
 
 #### Routing Table and Route Selector
 

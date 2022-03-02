@@ -1,0 +1,8 @@
+node = 0 | BGP | 5000
+node = 1 | BGP | 3000
+node = 2 | BGP | 1000
+node = 3 | BGP | 1000
+link = 1 | 0 | C
+link = 2 | 1 | R
+link = 0 | 2 | R
+link = 3 | 1 | R
