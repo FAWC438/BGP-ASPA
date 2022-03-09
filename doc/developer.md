@@ -341,9 +341,9 @@ intentionally or unintentionally forget to include the sending node in the AS-PA
 transformation of both the LOCAL-PREF and the AS-PATH provides us with the flexibility to run simulations where all or
 some nodes violate the original specification.
 
-###### Example of interdomain routing under BGP
+###### Example of inter domain routing under BGP
 
-The interdomain routing policies described here refer to the baseline GR routing policies
+The inter domain routing policies described here refer to the baseline GR routing policies
 defined [here](https://www.cs.princeton.edu/~jrex/papers/sigmetrics00.long.pdf). These policies define two possible
 relationships: customer-provider, and peer-peer. Each node can have three different relationships with a neighbor: it
 may be a customer, a provider, or a peer. This corresponds to having three different extenders, one for each

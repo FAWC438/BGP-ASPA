@@ -18,27 +18,26 @@ import java.io.FileWriter
  * TODO @doc
  * TODO @optimization - try different methods of writing that may speedup the simulation process
  */
-class TraceReporter(outputFile: File): DataCollector, StartListener,
-        LearnListener, ExportListener, SelectListener, DetectListener, Closeable {
+class TraceReporter(outputFile: File) : DataCollector, StartListener,
+    LearnListener, ExportListener, SelectListener, DetectListener, Closeable {
 
     private val baseOutputFile = outputFile
 
     /**
-     * The reporter outputs the trace of each simulation to its own file.
-     * This variable stores the output file for the current simulation. It is updated every time a new simulation
-     * starts.
+     * 报告器将每个模拟的跟踪输出到其自己的文件中。
+     * 此变量存储当前仿真的输出文件。每次新的模拟开始时都会更新。
      */
     private var simulationWriter: BufferedWriter? = null
     private var simulationNumber = 0
 
     /**
-     * Stores the size for the "Node" column. This depends on the size of longest node ID.
-     * By default, it is set to fit the word "Node" included in the header.
+     * 存储“节点”列的大小。这取决于最长节点 ID 的大小。
+     * 默认情况下，它设置为适合标题中包含的“节点”一词。
      */
     private var nodeColumnSize = 4
 
-            /**
-     * Adds the collector as a listener for notifications the collector needs to listen to collect data.
+    /**
+     * 将收集器添加为收集器需要侦听以收集数据的通知的侦听器。
      */
     override fun register() {
         Notifier.addStartListener(this)
@@ -49,7 +48,7 @@ class TraceReporter(outputFile: File): DataCollector, StartListener,
     }
 
     /**
-     * Removes the collector from all notifiers
+     * 从所有通知器中删除收集器
      */
     override fun unregister() {
         Notifier.removeStartListener(this)
@@ -58,13 +57,13 @@ class TraceReporter(outputFile: File): DataCollector, StartListener,
         BGPNotifier.removeSelectListener(this)
         BGPNotifier.removeDetectListener(this)
 
-        // Unregister must always be called before discarding the trace reporter
-        // Thus, it is a go way to ensure that the current writer is closed to
+        // 在丢弃跟踪报告器之前必须始终调用取消注册
+        // 因此，这是确保当前编写器关闭的一种方法
         close()
     }
 
     /**
-     * Closes the underlying writer.
+     * 关闭底层编写器。
      */
     override fun close() {
         simulationWriter?.close()
@@ -72,7 +71,7 @@ class TraceReporter(outputFile: File): DataCollector, StartListener,
     }
 
     /**
-     * Reports the currently collected data.
+     * 报告当前收集的数据。
      */
     override fun report() {
         // nothing to do
@@ -80,54 +79,59 @@ class TraceReporter(outputFile: File): DataCollector, StartListener,
     }
 
     /**
-     * Clears all collected data.
+     * 清除所有收集的数据。
      */
     override fun clear() {
         // nothing to do
     }
 
     /**
-     * Invoked to notify the listener of a new start notification.
+     * 调用以通知侦听器新的开始通知。
      */
     override fun onStart(notification: StartNotification) {
-        // Keeping track of the number of simulations is important to ensure that the tracing output from a new
-        // simulation does not overwrite the previous one
+        // 跟踪模拟的数量对于确保新模拟的跟踪输出不会覆盖前一个模拟非常重要
         simulationNumber++
 
-        // The trace output of each simulation is written to its own file
-        val simulationOutputFile = File(baseOutputFile.parent, baseOutputFile.nameWithoutExtension +
-                "$simulationNumber.${baseOutputFile.extension}")
+        // 每个模拟的跟踪输出都写入自己的文件
+        val simulationOutputFile = File(
+            baseOutputFile.parent, baseOutputFile.nameWithoutExtension +
+                    "$simulationNumber.${baseOutputFile.extension}"
+        )
 
-        // Close writer used for a previous simulation and create a new one for the new simulation
+        // 关闭用于先前模拟的编写器并为新模拟创建一个新的
         simulationWriter?.close()
         simulationWriter = BufferedWriter(FileWriter(simulationOutputFile))
 
-        // Look for all node IDs to determine which one has the longest ID number
+        // 查找所有节点 ID 以确定哪个节点的 ID 号最长
         val maxIDSize = notification.topology.nodes.asSequence().map { it.id }.maxOrNull() ?: 0
 
-        // Node column size corresponds to longest between the word "Node" and the longest node ID
-        nodeColumnSize = maxOf(4, maxIDSize)
+        // 节点列大小对应于单词“Node”和最长节点 ID 之间的最长
+        // warning: 此处有重大bug
+        // nodeColumnSize = maxOf(4, maxIDSize)
+        nodeColumnSize = 8
 
-        // Write headers
+        // 写标题
         simulationWriter?.apply {
             write("${align("Time")}| Event  | ${align("Node", nodeColumnSize)} | Routing Information\n")
         }
     }
 
     /**
-     * Invoked to notify the listener of a new learn notification.
+     * 调用以通知侦听器新的学习通知。
      */
     override fun onLearn(notification: LearnNotification) {
         simulationWriter?.apply {
             notification.apply {
-                write("${align(time)}| LEARN  | ${align(node.pretty(), nodeColumnSize)} | ${route.pretty()} " +
-                        "via ${neighbor.pretty()}\n")
+                write(
+                    "${align(time)}| LEARN  | ${align(node.pretty(), nodeColumnSize)} | ${route.pretty()} " +
+                            "via ${neighbor.pretty()}\n"
+                )
             }
         }
     }
 
     /**
-     * Invoked to notify the listener of a new export notification.
+     * 调用以通知侦听器新的导出通知。
      */
     override fun onExport(notification: ExportNotification) {
         simulationWriter?.apply {
@@ -138,19 +142,21 @@ class TraceReporter(outputFile: File): DataCollector, StartListener,
     }
 
     /**
-     * Invoked to notify the listener of a new learn notification.
+     * 调用以通知侦听器新的学习通知。
      */
     override fun onSelect(notification: SelectNotification) {
         simulationWriter?.apply {
             notification.apply {
-                write("${align(time)}| SELECT | ${align(node.pretty(), nodeColumnSize)} | " +
-                        "${selectedRoute.pretty()} over ${previousRoute.pretty()}\n")
+                write(
+                    "${align(time)}| SELECT | ${align(node.pretty(), nodeColumnSize)} | " +
+                            "${selectedRoute.pretty()} over ${previousRoute.pretty()}\n"
+                )
             }
         }
     }
 
     /**
-     * Invoked to notify the listener of a new detect notification.
+     * 调用以通知侦听器新的检测通知。
      */
     override fun onDetect(notification: DetectNotification) {
         simulationWriter?.apply {
@@ -161,7 +167,7 @@ class TraceReporter(outputFile: File): DataCollector, StartListener,
     }
 
     //
-    //  Helper functions to help align the information shown in the messages
+    //  帮助对齐消息中显示的信息的辅助函数
     //
 
     private fun align(value: Any, length: Int = 7): String {

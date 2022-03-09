@@ -22,7 +22,7 @@ abstract class Notification(val time: Time = currentTime())
  *
  * @author David Fialho
  *
- * Notification issued when a simulation starts.
+ * 模拟开始时发出的通知。
  *
  * @property seed     the initial seed used to generate the message delays
  * @property topology the topology used for the simulation
