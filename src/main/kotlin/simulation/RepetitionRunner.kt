@@ -11,30 +11,25 @@ import ui.Application
 import java.io.File
 import java.time.Instant
 
-/**
- * Created on 29-08-2017
- *
- * @author David Fialho
- */
-class RepetitionRunner<R: Route>(
-        private val application: Application,
-        private val topology: Topology<R>,
-        private val advertisements: List<Advertisement<R>>,
-        private val threshold: Time,
-        private val repetitions: Int,
-        private val messageDelayGenerator: DelayGenerator,
-        private val metadataFile: File?
 
-): Runner<R> {
+class RepetitionRunner<R : Route>(
+    private val application: Application,
+    private val topology: Topology<R>,
+    private val advertisements: List<Advertisement<R>>,
+    private val threshold: Time,
+    private val repetitions: Int,
+    private val messageDelayGenerator: DelayGenerator,
+    private val metadataFile: File?
+
+) : Runner<R> {
 
     /**
-     * Runs the specified execution the number of times specified in the [repetitions] property.
+     * 按照 [repetitions] 属性中指定的次数运行指定的执行。
      *
-     * The simulator's configurations may be modified during the run. At the end of this method the
-     * simulator is always reverted to its defaults.
+     * 模拟器的配置可能在运行期间被修改。在这个方法结束时，模拟器总是恢复到它的默认值。
      *
-     * @param execution the execution that will be executed in each run
-     * @param metadata  a metadata instance that may already contain some meta values
+     * @param execution 将在每次运行中执行的执行
+     * @param metadata  可能已经包含一些元值的元数据实例
      */
     override fun run(execution: Execution<R>, metadata: Metadata) {
 
@@ -50,7 +45,7 @@ class RepetitionRunner<R: Route>(
                         execution.execute(topology, advertisements, threshold)
                     }
 
-                    // Cleanup for next execution
+                    // 为下一次执行清理
                     topology.reset()
                     // TODO @refactor - put stubs in the topology itself to avoid having this
                     //                  reset() method in the advertiser interface
@@ -59,7 +54,7 @@ class RepetitionRunner<R: Route>(
                 }
 
             } finally {
-                // Make sure that the simulator is always reverted to the defaults after running
+                // 确保模拟器在运行后始终恢复为默认值
                 Simulator.resetToDefaults()
             }
         }

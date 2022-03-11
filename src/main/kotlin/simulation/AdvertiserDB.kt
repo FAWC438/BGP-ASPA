@@ -8,35 +8,31 @@ import java.io.File
 import java.io.IOException
 
 /**
- * Created on 13-11-2017
  *
- * @author David Fialho
- *
- * The Advertiser DB is an abstraction to obtain advertising nodes from both the topology (if they
- * are included in it) and a database of stub nodes. The stub database is optional. If no database
- * is specified, advertising node will only be taken from the topology.
+ * Advertiser DB 是从拓扑（如果它们包含在其中）和存根节点数据库中获取广告节点的抽象。
+ * 存根数据库是可选的。如果未指定数据库，则仅从拓扑中获取广告节点。
  *
  * @property topology   the topology to get advertisers from
  * @property stubsFile  the file specifying stubs to use as advertisers
  * @param stubsProtocol the protocol to assign to stubs
  * @param parseExtender the function used to parse extender labels to actual extenders
  */
-class AdvertiserDB<R: Route>(
-        val topology: Topology<R>,
-        val stubsFile: File?,
-        private val stubsProtocol: Protocol<R>,
-        private val parseExtender: (String) -> Extender<R>
+class AdvertiserDB<R : Route>(
+    val topology: Topology<R>,
+    private val stubsFile: File?,
+    private val stubsProtocol: Protocol<R>,
+    private val parseExtender: (String) -> Extender<R>
 ) {
 
     /**
      * Handler class used to create stubs found in a stubs file while it is parsed.
      */
-    private class StubsCreator<R: Route>(
-            private val stubIDs: List<NodeID>,
-            private val topology: Topology<R>,
-            private val stubsProtocol: Protocol<R>,
-            private val parseExtender: (String) -> Extender<R>
-    ): StubParser.Handler {
+    private class StubsCreator<R : Route>(
+        private val stubIDs: List<NodeID>,
+        private val topology: Topology<R>,
+        private val stubsProtocol: Protocol<R>,
+        private val parseExtender: (String) -> Extender<R>
+    ) : StubParser.Handler {
 
         /**
          * Maps IDs to stubs
@@ -68,8 +64,10 @@ class AdvertiserDB<R: Route>(
             val neighbor = topology[inNeighbor]
 
             if (neighbor == null) {
-                throw ParseException("neighbor '$inNeighbor' of stub '$id' was not found in " +
-                        "the topology", currentLine)
+                throw ParseException(
+                    "neighbor '$inNeighbor' of stub '$id' was not found in " +
+                            "the topology", currentLine
+                )
             }
 
             // May throw a ParseException
@@ -116,8 +114,10 @@ class AdvertiserDB<R: Route>(
 
         // Look in stubs file only for advertisers that were not found in the topology
         if (!missingAdvertisers.isEmpty() && stubsFile != null) {
-            val stubsCreator = StubsCreator(missingAdvertisers,
-                    topology, stubsProtocol, parseExtender)
+            val stubsCreator = StubsCreator(
+                missingAdvertisers,
+                topology, stubsProtocol, parseExtender
+            )
 
             StubParser(stubsFile).use {
                 it.parse(stubsCreator)
@@ -131,8 +131,10 @@ class AdvertiserDB<R: Route>(
             val idsFound = advertisers.map { it.id }.toSet()
             val idsNotFound = advertiserIDs.filter { it in idsFound }
 
-            throw InitializationException("the following advertisers " +
-                    "'${idsNotFound.joinToString(limit = 5)}' were not found")
+            throw InitializationException(
+                "the following advertisers " +
+                        "'${idsNotFound.joinToString(limit = 5)}' were not found"
+            )
         }
 
         return advertisers

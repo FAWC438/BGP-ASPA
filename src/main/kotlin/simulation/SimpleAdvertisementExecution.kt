@@ -7,22 +7,17 @@ import core.simulator.Simulator
 import core.simulator.Time
 import java.io.IOException
 
-/**
- * Created on 29-08-2017
- *
- * @author David Fialho
- */
-class SimpleAdvertisementExecution<R: Route>: Execution<R> {
+
+class SimpleAdvertisementExecution<R : Route> : Execution<R> {
 
     val dataCollectors = DataCollectorGroup()
 
     /**
-     * Executes a simulation, collects data from it, and reports the results.
+     * 执行模拟，从中收集数据并报告结果。
      *
-     * To collect data, before calling this method the data collectors to be used must be specified,
-     * by adding each collector to the data collector group of this execution.
+     * 要收集数据，在调用此方法之前，必须指定要使用的数据收集器，方法是将每个收集器添加到此执行的数据收集器组中。
      *
-     * @throws IOException If an I/O error occurs
+     * @throws IOException 如果发生 IO 错误
      */
     @Throws(IOException::class)
     override fun execute(topology: Topology<R>, advertisement: Advertisement<R>, threshold: Time) {
@@ -30,19 +25,21 @@ class SimpleAdvertisementExecution<R: Route>: Execution<R> {
     }
 
     /**
-     * Executes a simulation, collects data from it, and reports the results.
+     * 执行模拟，从中收集数据并报告结果。
      *
-     * To collect data, before calling this method the data collectors to be used must be specified,
-     * by adding each collector to the data collector group of this execution.
+     * 要收集数据，在调用此方法之前，必须指定要使用的数据收集器，方法是将每个收集器添加到此执行的数据收集器组中。
      *
-     * @throws IOException If an I/O error occurs
+     * @throws IOException 如果发生 IO 错误
      */
     @Throws(IOException::class)
-    override fun execute(topology: Topology<R>, advertisements: List<Advertisement<R>>,
-                         threshold: Time) {
+    override fun execute(
+        topology: Topology<R>, advertisements: List<Advertisement<R>>,
+        threshold: Time
+    ) {
 
         dataCollectors.clear()
 
+        // 在此处运行模拟器
         val data = dataCollectors.collect {
             Simulator.simulate(topology, advertisements, threshold)
         }

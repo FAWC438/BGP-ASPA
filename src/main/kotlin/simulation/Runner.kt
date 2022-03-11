@@ -3,16 +3,13 @@ package simulation
 import core.routing.Route
 
 /**
- * Created on 29-08-2017
- *
- * @author David Fialho
  *
  * TODO @doc - add documentation for Runner
  */
-interface Runner<R: Route> {
+interface Runner<R : Route> {
 
     /**
-     * Runs the specified execution.
+     * 运行指定的执行程序。
      */
     fun run(execution: Execution<R>, metadata: Metadata)
 

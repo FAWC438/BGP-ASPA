@@ -4,19 +4,15 @@ import core.routing.Route
 import ui.Application
 
 /**
- * Created on 09-11-2017
  *
- * @author David Fialho
- *
- * An initializer is responsible for setting up the simulator and getting it ready to run. To do so,
- * it may require some parameters that should be provided in the constructor.
+ * 初始化程序负责设置模拟器并使其准备好运行。为此，它可能需要一些应在构造函数中提供的参数。
  *
  * TODO @doc - improve the initializer's documentation
  */
-interface Initializer<R: Route> {
+interface Initializer<R : Route> {
 
     /**
-     * Initializes a runner and execution based on some predefined parameters.
+     * 根据一些预定义的参数初始化运行器和执行器。
      */
     fun initialize(application: Application, metadata: Metadata): Pair<Runner<R>, Execution<R>>
 }

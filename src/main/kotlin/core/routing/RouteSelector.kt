@@ -1,46 +1,38 @@
 package core.routing
 
 /**
- * A RouteSelector is responsible for selecting the most preferred route in a routing [table],
- * according to a [compare] function.
+ * RouteSelector 负责根据 [compare] 函数在路由 [table] 中选择最优先的路由。
  *
- * The [compare] function should take two routes and return an integer value to indicate their
- * order:
- *   - a positive integer value indicates the first route has an higher preference than the second
- *   - a zero indicates the two routes have the exact same preference
- *   - a negative integer value indicates the first route has an lower preference than the second
+ * [compare] 函数应该采用两条路由并返回一个整数值来指示它们的顺序：
+ *   - 正整数值表示第一个路由的优先级高于第二个
+ *   - 零表示两条路线具有完全相同的偏好
+ *   - 负整数值表示第一个路由的优先级低于第二个
  *
- * The way it works is similar to a cache. It keeps track of the selected route and neighbor until
- * these become invalid. Instead of updating the routing table directly, you use the [update]
- * method, which triggers the route selection operation and updates the routing table as well. This
- * allows the selector to adjust the selected route and neighbor in the most efficient way
- * possible. Warning: DO NOT update the routing table outside of the selector, since doing this
- * will hide routes from the selector, which will probably lead to unexpected behavior.
+ * 它的工作方式类似于缓存。它跟踪选定的路由和邻居，直到它们变得无效。
+ * 不是直接更新路由表，而是使用 [update] 方法，它会触发路由选择操作并更新路由表。
+ * 这允许选择器以最有效的方式调整所选路线和邻居。
+ * 警告：不要在选择器之外更新路由表，因为这样做会隐藏选择器的路由，这可能会导致意外行为。
  *
- * @property table the underlying routing table that actually stores the routes
+ * @property table 实际存储路由的底层路由表
  *
- * @constructor Creates a new selector around the given [table]. It should not be used directly.
- * Use the factory methods instead.
- * @param forceReselect if true, then the selector inspects all routes in the table and selects
- * the most preferred route. Otherwise, the selector starts off with no selected route.
+ * @constructor 在给定的 [table] 周围创建一个新的选择器。它不应该直接使用。请改用工厂方法。
+ * @param forceReselect 如果为真，则选择器检查表中的所有路由并选择最喜欢的路由。否则，选择器从没有选择的路线开始。
  *
- * Created on 21-07-2017
- *
- * @author David Fialho
  */
 class RouteSelector<R : Route> private constructor(
-        val table: RoutingTable<R>,
-        private val compare: (R, R) -> Int,
-        forceReselect: Boolean = true
+    val table: RoutingTable<R>,
+    private val compare: (R, R) -> Int,
+    forceReselect: Boolean = true
 ) {
 
-    // Stores the currently selected route
+    // 存储当前选择的路线
     private var selectedRoute: R = table.invalidRoute
-    // Stores the currently selected neighbor
+
+    // 存储当前选择的邻居
     private var selectedNeighbor: Node<R>? = null
 
     /**
-     * Keeps record of the neighbors that are disabled.
+     * 记录被禁用的邻居。
      */
     private val mutableDisabledNeighbors = HashSet<Node<R>>()
     val disabledNeighbors: Collection<Node<R>> get() = mutableDisabledNeighbors
@@ -54,20 +46,17 @@ class RouteSelector<R : Route> private constructor(
     companion object Factory {
 
         /**
-         * Returns a [RouteSelector] based on newly created routing table. This is the
-         * recommended way to create a selector from a new table.
+         * 根据新创建的路由表返回一个 [RouteSelector]。这是从新表创建选择器的推荐方法。
          *
-         * @param invalid the route to set as invalid route by the new routing table
-         * @param compare the function to compare routes with
+         * @param invalid 新路由表设置为无效路由的路由
+         * @param compare 比较路由的方法
          */
         fun <R : Route> wrapNewTable(invalid: R, compare: (R, R) -> Int): RouteSelector<R> {
             return RouteSelector(RoutingTable.empty(invalid), compare, forceReselect = false)
         }
 
         /**
-         * Returns a [RouteSelector] wrapping an existing routing [table]. Upon initialization the
-         * selector goes through all routes stored in [table] and selects the best route
-         * according to [compare].
+         * 返回包装现有路由 [table] 的 [RouteSelector]。初始化时，选择器会遍历存储在 [table] 中的所有路由，并根据 [compare] 选择最佳路由。
          *
          * @param table   the table to be wrapped by the selector
          * @param compare the compare method used to compare route preferences
@@ -79,23 +68,23 @@ class RouteSelector<R : Route> private constructor(
     }
 
     /**
-     * Returns the currently selected route
+     * 返回当前选择的路线
      */
     // TODO @refactor - use a value property instead of the get method
     fun getSelectedRoute(): R = selectedRoute
 
     /**
-     * Returns the currently selected neighbor.
+     * 返回当前选择的邻居。
      */
     // TODO @refactor - use a value property instead of the get method
     fun getSelectedNeighbor(): Node<R>? = selectedNeighbor
 
     /**
-     * Updates the candidate route for [neighbor] to [route].
+     * 将 [neighbor] 的候选路由更新为 [route]。
      *
-     * This operation may trigger an update to the selected route and neighbor.
+     * 此操作可能会触发对所选路由和邻居的更新。
      *
-     * @return true if the selected route/neighbor was updated or false if otherwise
+     * @return 如果所选路由邻居已更新，则为 true，否则为 false
      */
     fun update(neighbor: Node<R>, route: R): Boolean {
 
@@ -116,21 +105,20 @@ class RouteSelector<R : Route> private constructor(
     }
 
     /**
-     * Disables [neighbor]. Disabling a neighbor makes that neighbor and its respective candidate
-     * route non-eligible for selection, even if that route is the best route available. That is,
-     * the selector will never select a route from a disabled neighbor.
+     * 禁用 [neighbor]。禁用邻居会使该邻居及其各自的候选路由不符合选择条件，即使该路由是可用的最佳路由。
+     * 也就是说，选择器永远不会从禁用的邻居中选择路由。
      *
-     * This operation may trigger an update to the selected route and neighbor.
+     * 此操作可能会触发对所选路由和邻居的更新。
      *
-     * @return true if the selected route/neighbor was updated or false if otherwise
+     * @return 如果所选路由邻居已更新，则为 true，否则为 false
      */
     fun disable(neighbor: Node<R>): Boolean {
 
         table.setEnabled(neighbor, false)
         mutableDisabledNeighbors.add(neighbor)
 
-        // Do not need to check if the node was added to the disabled neighbors set:
-        // if it wasn't then the neighbor was already disabled and surely is not the selected neighbor
+        // 不需要检查节点是否已添加到禁用邻居集中：
+        // 如果不是，则该邻居已被禁用，并且肯定不是选定的邻居
 
         if (neighbor == selectedNeighbor) {
             reselect()
@@ -141,18 +129,15 @@ class RouteSelector<R : Route> private constructor(
     }
 
     /**
-     * Enables [neighbor] if [neighbor] was disabled. Enabling a disabled neighbor may trigger
-     * an update to the selected route and neighbor. Enabling an already enabled neighbor has no
-     * effect.
+     * 如果 [neighbor] 被禁用，则启用 [neighbor]。启用禁用的邻居可能会触发对所选路由和邻居的更新。启用已启用的邻居无效。
      *
-     * @return true if the selected route/neighbor was updated or false if otherwise
+     * @return 如果所选路由邻居已更新，则为 true，否则为 false
      */
     fun enable(neighbor: Node<R>): Boolean {
 
         table.setEnabled(neighbor, true)
 
-        // Checking if the neighbor was really removed from the disabled set avoids making
-        // a table lookup if the node was not disabled
+        // 检查邻居是否真的从禁用集中删除可以避免在节点未禁用时进行表查找
 
         if (mutableDisabledNeighbors.remove(neighbor)) {
 
@@ -168,9 +153,9 @@ class RouteSelector<R : Route> private constructor(
     }
 
     /**
-     * Enables all neighbors that are currently disabled.
+     * 启用当前禁用的所有邻居。
      *
-     * @return true if the selected route/neighbor was updated or false if otherwise
+     * @return 如果所选路由邻居已更新，则为 true，否则为 false
      */
     // TODO @refactor - remove this method because it is not used in production
     fun enableAll(): Boolean {
@@ -187,20 +172,20 @@ class RouteSelector<R : Route> private constructor(
             }
         }
 
-        // If we are enabling all neighbors that this set can be cleared
+        // 如果我们启用所有可以清除该集合的邻居
         mutableDisabledNeighbors.clear()
 
-        if (compare(selectedRouteAmongDisabled, selectedRoute) > 0) {
+        return if (compare(selectedRouteAmongDisabled, selectedRoute) > 0) {
             selectedRoute = selectedRouteAmongDisabled
             selectedNeighbor = selectedNeighborAmongDisabled
-            return true
+            true
         } else {
-            return false
+            false
         }
     }
 
     /**
-     * Forces the selector to re-evaluate all candidate route and re-select best route among them.
+     * 强制选择器重新评估所有候选路线并重新选择其中的最佳路线。
      */
     fun reselect() {
 
@@ -216,8 +201,7 @@ class RouteSelector<R : Route> private constructor(
     }
 
     /**
-     * Clears all routes from the underlying routing table. The selector automatically updates
-     * its selected route to the invalid route.
+     * 清除底层路由表中的所有路由。选择器自动将其选择的路由更新为无效路由。
      */
     fun clear() {
         selectedRoute = table.invalidRoute
@@ -227,7 +211,7 @@ class RouteSelector<R : Route> private constructor(
     }
 
     @Suppress("NOTHING_TO_INLINE")
-    inline private fun updateSelectedTo(route: R, neighbor: Node<R>?) {
+    private inline fun updateSelectedTo(route: R, neighbor: Node<R>?) {
         selectedRoute = route
         selectedNeighbor = neighbor
     }

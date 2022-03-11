@@ -1,11 +1,7 @@
 package bgp.notifications
 
-/**
- * Created on 26-07-2017
- *
- * @author David Fialho
- */
-object BGPNotifier{
+
+object BGPNotifier {
 
     //region Lists containing the registered listeners
 
@@ -19,23 +15,21 @@ object BGPNotifier{
     //region Learn notification
 
     /**
-     * Tell the notifier that [listener] wants to receive learn notifications. Afterwards, the
-     * [listener] will receive all learn notifications.
+     * 告诉通知者 [listener] 想要接收学习通知。之后，[listener] 将收到所有学习通知。
      */
     fun addLearnListener(listener: LearnListener) {
         learnListeners.add(listener)
     }
 
     /**
-     * Tell the notifier that [listener] no longer wants to receive learn notifications.
-     * Afterwards, the [listener] will no longer receive learn notifications.
+     * 告诉通知者 [listener] 不再想接收学习通知。之后，[listener] 将不再收到学习通知。
      */
     fun removeLearnListener(listener: LearnListener) {
         learnListeners.remove(listener)
     }
 
     /**
-     * Sends [notification] to all listeners listening to learn notifications.
+     * 向所有收听学习通知的听众发送 [notification]。
      */
     fun notify(notification: LearnNotification) {
         learnListeners.forEach { it.onLearn(notification) }
@@ -46,23 +40,21 @@ object BGPNotifier{
     //region Detect notification
 
     /**
-     * Tell the notifier that [listener] wants to receive detect notifications. Afterwards, the
-     * [listener] will receive all detect notifications.
+     * 告诉通知者 [listener] 想要接收检测通知。之后，[listener] 将收到所有检测通知。
      */
     fun addDetectListener(listener: DetectListener) {
         detectListeners.add(listener)
     }
 
     /**
-     * Tell the notifier that [listener] no longer wants to receive detect notifications.
-     * Afterwards, the [listener] will no longer receive detect notifications.
+     * 告诉通知者 [listener] 不再想接收检测通知。之后，[listener] 将不再收到检测通知。
      */
     fun removeDetectListener(listener: DetectListener) {
         detectListeners.remove(listener)
     }
 
     /**
-     * Sends [notification] to all listeners listening to detect notifications.
+     * 向所有侦听器发送 [notification] 以检测通知。
      */
     fun notify(notification: DetectNotification) {
         detectListeners.forEach { it.onDetect(notification) }
@@ -73,23 +65,21 @@ object BGPNotifier{
     //region Select notification
 
     /**
-     * Tell the notifier that [listener] wants to receive select notifications. Afterwards, the
-     * [listener] will receive all select notifications.
+     * 告诉通知者 [listener] 想要接收选择通知。之后，[listener] 将收到所有选择通知。
      */
     fun addSelectListener(listener: SelectListener) {
         selectListeners.add(listener)
     }
 
     /**
-     * Tell the notifier that [listener] no longer wants to receive select notifications.
-     * Afterwards, the [listener] will no longer receive select notifications.
+     * 告诉通知者 [listener] 不再想接收选择通知。之后，[listener] 将不再收到选择通知。
      */
     fun removeSelectListener(listener: SelectListener) {
         selectListeners.remove(listener)
     }
 
     /**
-     * Sends [notification] to all listeners listening to select notifications.
+     * 向所有侦听选择通知的侦听器发送 [notification]。
      */
     fun notify(notification: SelectNotification) {
         selectListeners.forEach { it.onSelect(notification) }
@@ -100,23 +90,21 @@ object BGPNotifier{
     //region Export notification
 
     /**
-     * Tell the notifier that [listener] wants to receive export notifications. Afterwards, the
-     * [listener] will receive all export notifications.
+     * 告诉通知者 [listener] 想要接收导出通知。之后，[listener] 将收到所有导出通知。
      */
     fun addExportListener(listener: ExportListener) {
         exportListeners.add(listener)
     }
 
     /**
-     * Tell the notifier that [listener] no longer wants to receive export notifications.
-     * Afterwards, the [listener] will no longer receive export notifications.
+     * 告诉通知者 [listener] 不再想接收导出通知。之后，[listener] 将不再收到导出通知。
      */
     fun removeExportListener(listener: ExportListener) {
         exportListeners.remove(listener)
     }
 
     /**
-     * Sends [notification] to all listeners listening to export notifications.
+     * 向所有收听导出通知的侦听器发送 [notification]。
      */
     fun notify(notification: ExportNotification) {
         exportListeners.forEach { it.onExport(notification) }

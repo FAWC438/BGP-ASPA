@@ -3,14 +3,10 @@ package core.simulator
 import core.routing.Route
 
 /**
- * Created on 09-11-2017
  *
- * @author David Fialho
- *
- * The advertise event triggers the [Advertiser.advertise] method of [advertiser] to have it
- * advertise [route].
+ * 通告事件触发 [advertiser] 的 [Advertiser.advertise] 方法使其广播 [route]。
  */
-class AdvertiseEvent<R: Route>(private val advertiser: Advertiser<R>, private val route: R): Event {
+class AdvertiseEvent<R : Route>(private val advertiser: Advertiser<R>, private val route: R) : Event {
 
     override fun processIt() {
         advertiser.advertise(route)

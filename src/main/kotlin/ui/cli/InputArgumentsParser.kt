@@ -15,27 +15,27 @@ import kotlin.system.exitProcess
 class InputArgumentsParser {
 
     companion object {
-        private val MAIN_COMMAND = "ssbgp-simulator"
+        private const val MAIN_COMMAND = "ssbgp-simulator"
 
         // 信息选项
-        private val HELP = "help"
-        private val VERSION = "version"
+        private const val HELP = "help"
+        private const val VERSION = "version"
 
         // 执行选项
-        private val TOPOLOGY_FILE = "topology"
-        private val ADVERTISER = "advertiser"
-        private val REPETITIONS = "repetitions"
-        private val REPORT_DIRECTORY = "output"
-        private val MIN_DELAY = "mindelay"
-        private val MAX_DELAY = "maxdelay"
-        private val THRESHOLD = "threshold"
-        private val SEED = "seed"
-        private val STUBS = "stubs"
-        private val NODE_REPORT = "reportnodes"
-        private val ADVERTISE_FILE = "advertise"
-        private val METADATA = "metadata"
-        private val TRACE = "trace"
-        private val MRAI = "mrai"
+        private const val TOPOLOGY_FILE = "topology"
+        private const val ADVERTISER = "advertiser"
+        private const val REPETITIONS = "repetitions"
+        private const val REPORT_DIRECTORY = "output"
+        private const val MIN_DELAY = "mindelay"
+        private const val MAX_DELAY = "maxdelay"
+        private const val THRESHOLD = "threshold"
+        private const val SEED = "seed"
+        private const val STUBS = "stubs"
+        private const val NODE_REPORT = "reportnodes"
+        private const val ADVERTISE_FILE = "advertise"
+        private const val METADATA = "metadata"
+        private const val TRACE = "trace"
+        private const val MRAI = "mrai"
     }
 
     private val options = Options()

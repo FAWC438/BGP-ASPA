@@ -1,18 +1,13 @@
 package core.simulator
 
 /**
- * Created on 22-07-2017
  *
- * @author David Fialho
- *
- * Interface for simulation event.
+ * 模拟事件的接口。
  */
 interface Event {
 
     /**
-     * Processes this event. This method is called at the time the event is supposed to be
-     * processed. Subclasses should use this method to implement whatever action this event
-     * triggers.
+     * 处理此事件。在应该处理事件时调用此方法。子类应该使用这个方法来实现这个事件触发的任何动作。
      */
     fun processIt()
 }

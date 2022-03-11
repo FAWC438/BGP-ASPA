@@ -6,17 +6,13 @@ import core.simulator.notifications.MessageReceivedNotification
 import core.simulator.notifications.Notifier
 
 /**
- * Created on 22-07-2017
  *
- * @author David Fialho
- *
- * A [MessageEvent] is issued when a message is sent and it occurs (it is processed) when the
- * message is delivered to its recipient node.
+ * [MessageEvent] 在发送消息时发出，并且在消息传递到其接收节点时发生（此消息此时正在被处理）。
  */
 class MessageEvent<R : Route>(private val message: Message<R>) : Event {
 
     /**
-     * Sends [message] to its recipient node.
+     * 将 [message] 发送到其接收节点。
      */
     override fun processIt() {
         Notifier.notify(MessageReceivedNotification(message))

@@ -68,7 +68,7 @@ abstract class BaseBGP(val mrai: Time, routingTable: RoutingTable<BGPRoute>) : P
      * @param neighbor      导出路由的邻居
      * @param importedRoute [node]导入的路由
      */
-    fun process(node: Node<BGPRoute>, neighbor: Node<BGPRoute>, importedRoute: BGPRoute) {
+    private fun process(node: Node<BGPRoute>, neighbor: Node<BGPRoute>, importedRoute: BGPRoute) {
 
         // 存储节点在处理此消息之前选择的路由
         val previousSelectedRoute = routingTable.getSelectedRoute()
@@ -104,13 +104,13 @@ abstract class BaseBGP(val mrai: Time, routingTable: RoutingTable<BGPRoute>) : P
      */
     protected fun learn(node: Node<BGPRoute>, sender: Node<BGPRoute>, route: BGPRoute): BGPRoute {
 
-        if (node in route.asPath) {
+        return if (node in route.asPath) {
             // 通知 implementations 检测到循环
             onLoopDetected(node, sender, route)
 
-            return BGPRoute.invalid()
+            BGPRoute.invalid()
         } else {
-            return route
+            route
         }
     }
 

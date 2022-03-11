@@ -15,75 +15,70 @@ import ui.Application
 import java.io.File
 import java.io.IOException
 
-/**
- * Created on 09-11-2017
- *
- * @author David Fialho
- */
+
 sealed class BGPAdvertisementInitializer(
-        // Mandatory
-        val topologyFile: File,
+    // 必须的
+    private val topologyFile: File,
 
-        // Optional (with defaults)
-        var repetitions: Int = DEFAULT_REPETITIONS,
-        var minDelay: Time = DEFAULT_MINDELAY,
-        var maxDelay: Time = DEFAULT_MAXDELAY,
-        var threshold: Time = DEFAULT_THRESHOLD,
-        var reportDirectory: File = DEFAULT_REPORT_DIRECTORY,
-        var reportNodes: Boolean = false,
-        var outputMetadata: Boolean = false,
-        var outputTrace: Boolean = false,
+    // Optional (with defaults)
+    var repetitions: Int = DEFAULT_REPETITIONS,
+    var minDelay: Time = DEFAULT_MINDELAY,
+    var maxDelay: Time = DEFAULT_MAXDELAY,
+    var threshold: Time = DEFAULT_THRESHOLD,
+    var reportDirectory: File = DEFAULT_REPORT_DIRECTORY,
+    var reportNodes: Boolean = false,
+    var outputMetadata: Boolean = false,
+    var outputTrace: Boolean = false,
 
-        // Optional (without defaults)
-        var seed: Long? = null,
-        var stubsFile: File? = null,
-        var forcedMRAI: Time? = null
+    // Optional (without defaults)
+    var seed: Long? = null,
+    var stubsFile: File? = null,
+    var forcedMRAI: Time? = null
 
-): Initializer<BGPRoute> {
+) : Initializer<BGPRoute> {
 
     companion object {
 
-        val DEFAULT_REPETITIONS = 1
-        val DEFAULT_THRESHOLD = 1_000_000
-        val DEFAULT_MINDELAY = 1
-        val DEFAULT_MAXDELAY = 1
+        const val DEFAULT_REPETITIONS = 1
+        const val DEFAULT_THRESHOLD = 1_000_000
+        const val DEFAULT_MINDELAY = 1
+        const val DEFAULT_MAXDELAY = 1
         val DEFAULT_REPORT_DIRECTORY = File(System.getProperty("user.dir"))  // current working directory
 
         fun with(topologyFile: File, advertiserIDs: Set<NodeID>): BGPAdvertisementInitializer =
-                BGPAdvertisementInitializer.UsingDefaultSet(topologyFile, advertiserIDs)
+            UsingDefaultSet(topologyFile, advertiserIDs)
 
         fun with(topologyFile: File, advertisementsFile: File): BGPAdvertisementInitializer =
-                BGPAdvertisementInitializer.UsingFile(topologyFile, advertisementsFile)
+            UsingFile(topologyFile, advertisementsFile)
     }
 
     /**
-     * This is the base output name for the report files. The base output name does no include the extension.
-     * Subclasses should provide a name depending on their specifications.
+     * 这是报告文件的基本输出名称。基本输出名称不包含扩展名。子类应根据其规范提供名称。
      */
     abstract val outputName: String
 
     /**
-     * Initializes a simulation. It sets up the executions to run and the runner to run them.
+     * 初始化模拟。它设置要运行的可执行程序和运行它们的运行器。
      */
     override fun initialize(application: Application, metadata: Metadata): Pair<Runner<BGPRoute>, Execution<BGPRoute>> {
 
-        // If no seed is set, then a new seed is generated, based on the current time, for each new initialization
+        // 如果没有设置种子，则基于当前时间为每个新的初始化生成一个新的种子
         val seed = seed ?: System.currentTimeMillis()
 
-        // Append extensions according to the file type
+        // 根据文件类型附加扩展名
         val basicReportFile = File(reportDirectory, outputName.plus(".basic.csv"))
         val nodesReportFile = File(reportDirectory, outputName.plus(".nodes.csv"))
         val metadataFile = File(reportDirectory, outputName.plus(".meta.txt"))
         val traceFile = File(reportDirectory, outputName.plus(".trace.txt"))
 
-        // Setup the message delay generator
+        // 设置消息延迟生成器
         val messageDelayGenerator = try {
             RandomDelayGenerator.with(minDelay, maxDelay, seed)
         } catch (e: IllegalArgumentException) {
             throw InitializationException(e.message)
         }
 
-        // Load the topology
+        // 加载拓扑
         val topology: Topology<BGPRoute> = application.loadTopology(topologyFile) {
             InterdomainTopologyReader(topologyFile, forcedMRAI).use {
                 it.read()
@@ -91,20 +86,22 @@ sealed class BGPAdvertisementInitializer(
         }
 
         val advertisements = application.setupAdvertisements {
-            // Subclasses determine how advertisements are configured, see subclasses at the bottom of this file
+            // 子类决定了通告的配置方式，请参阅此文件底部的子类
             initAdvertisements(application, topology)
         }
 
+        // 一次执行需要的参数
         val runner = RepetitionRunner(
-                application,
-                topology,
-                advertisements,
-                threshold,
-                repetitions,
-                messageDelayGenerator,
-                metadataFile = if(outputMetadata) metadataFile else null  // null tells the runner not to print metadata
+            application,
+            topology,
+            advertisements,
+            threshold,
+            repetitions,
+            messageDelayGenerator,
+            metadataFile = if (outputMetadata) metadataFile else null  // null 告诉程序不要打印元数据
         )
 
+        // 模拟执行入口，即每次重复执行的入口
         val execution = SimpleAdvertisementExecution<BGPRoute>().apply {
             dataCollectors.add(BasicDataCollector(basicReportFile))
 
@@ -133,10 +130,9 @@ sealed class BGPAdvertisementInitializer(
     }
 
     /**
-     * Subclasses should use this method to initialize advertisements to occur in the simulation. The way these are
-     * defined is dependent on the implementation.
+     * 子类应使用此方法来初始化通告以在模拟中发生。这些定义的方式取决于实现。
      *
-     * @return list of initialized advertisements to occur in the simulation
+     * @return 模拟中出现的初始化通告列表
      */
     protected abstract fun initAdvertisements(application: Application, topology: Topology<BGPRoute>)
             : List<Advertisement<BGPRoute>>
@@ -148,76 +144,69 @@ sealed class BGPAdvertisementInitializer(
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Initialization based on a set of pre-defined advertiser IDs. Each ID is mapped to an advertiser. An advertiser
-     * can be obtained from the topology or from a stubs file.
+     * 基于一组预定义的通告客户 ID 进行初始化。每个 ID 都映射到一个通告者。可以从拓扑或存根文件中获取通告者。
      *
-     * It generates a single advertisement for each advertiser, with a default route corresponding to the self BGP
-     * route, and an advertising time of 0.
+     * 它为每个通告者生成一个通告，默认路由对应self BGP route，advertising time为0。
      */
-    private class UsingDefaultSet(topologyFile: File, val advertiserIDs: Set<NodeID>)
-        : BGPAdvertisementInitializer(topologyFile) {
+    private class UsingDefaultSet(topologyFile: File, val advertiserIDs: Set<NodeID>) :
+        BGPAdvertisementInitializer(topologyFile) {
 
         init {
-            // Verify that at least 1 advertiser ID is provided in the constructor
+            // 验证构造函数中是否提供了至少 1 个通告者 ID
             if (advertiserIDs.isEmpty()) {
                 throw IllegalArgumentException("initializer requires at least 1 advertiser")
             }
         }
 
         /**
-         * The output name (excluding the extension) corresponds to the topology filename and the IDs of the
-         * advertisers. For instance, if the topology file name is `topology.topo` and the advertiser IDs are 10 and
-         * 12, then the output file name will be `topology_10-12`.
+         * 输出名称（不包括扩展名）对应于拓扑文件名和通告者的 ID。
+         * 例如，如果拓扑文件名为“topology.topo”，通告者 ID 为 10 和 12，则输出文件名为“topology_10-12”。
          */
         override val outputName: String = topologyFile.nameWithoutExtension + "_${advertiserIDs.joinToString("-")}"
 
         /**
-         * A single advertisement is created for each advertiser specified in the ID set.
+         * 为 ID 集中指定的每个广告商创建一个通告。
          *
          * @throws InitializationException if the advertisers can not be found in the topology or stubs file
          * @throws ParseException if the stubs file format is invalid
          * @throws IOException if an IO error occurs
-         * @return list of initialized advertisements to occur in the simulation
+         * @return 模拟中出现的初始化通告列表
          */
         override fun initAdvertisements(application: Application, topology: Topology<BGPRoute>)
                 : List<Advertisement<BGPRoute>> {
 
-            // Find all the advertisers from the specified IDs
+            // 从指定 ID 中查找所有通告者
             val advertisers = application.readStubsFile(stubsFile) {
                 AdvertiserDB(topology, stubsFile, BGP(), ::parseInterdomainExtender)
-                        .get(advertiserIDs.toList())
+                    .get(advertiserIDs.toList())
             }
 
-            // In this mode, nodes set the self BGP route as the default route
-            // Use the advertisements file to configure different routes
+            // 该模式下，节点将自身BGP路由设置为默认路由
+            // 使用通告文件配置不同的路由
             return advertisers.map { Advertisement(it, BGPRoute.self()) }.toList()
         }
     }
 
     /**
-     * Initialization based on an advertisements file. This file describes the set of advertisements to occur in each
-     * simulation execution.
+     * 基于通告文件的初始化。该文件描述了在每次模拟执行中出现的一组通告。
      *
-     * The advertiser IDs described in the advertisements file are mapped to actual advertisers. An advertiser
-     * can be obtained from the topology or from a stubs file.
+     * 通告文件中描述的通告者 ID 映射到实际通告者。可以从拓扑或存根文件中获取通告者。
      */
-    private class UsingFile(topologyFile: File, val advertisementsFile: File)
-        : BGPAdvertisementInitializer(topologyFile) {
+    private class UsingFile(topologyFile: File, val advertisementsFile: File) :
+        BGPAdvertisementInitializer(topologyFile) {
 
         /**
-         * The output name (excluding the extension) corresponds to the topology filename appended with the
-         * advertisements file name.
+         * 输出名称（不包括扩展名）对应于带有通告文件名的拓扑文件名。
          *
-         * For instance, if the topology file name is `topology.topo` and the advertisements file name is
-         * `advertisements.adv`, then the output base name is `topology-advertisements`
+         * 例如，如果拓扑文件名为“topology.topo”，广告文件名为“advertisements.adv”，则输出基本名称为“topology-advertisements”
          */
         override val outputName: String =
-                "${topologyFile.nameWithoutExtension}-${advertisementsFile.nameWithoutExtension}"
+            "${topologyFile.nameWithoutExtension}-${advertisementsFile.nameWithoutExtension}"
 
         /**
-         * Advertisements are obtained from an advertisements file
+         * 通告是从通告文件中获取的
          *
-         * @return list of initialized advertisements to occur in the simulation
+         * @return 模拟中出现的初始化通告列表
          * @throws InitializationException if the advertisers can not be found in the topology or stubs file
          * @throws ParseException if the advertisements file format or the stubs file format are invalid
          * @throws IOException if an IO error occurs
@@ -232,10 +221,10 @@ sealed class BGPAdvertisementInitializer(
                 }
             }
 
-            // Find all the advertisers based on the IDs included in the advertisements file
+            // 根据通告文件中包含的 ID 查找所有广告商
             val advertisers = application.readStubsFile(stubsFile) {
                 AdvertiserDB(topology, stubsFile, BGP(), ::parseInterdomainExtender)
-                        .get(advertisingInfo.map { it.advertiserID })
+                    .get(advertisingInfo.map { it.advertiserID })
             }
 
             val advertisersByID = advertisers.associateBy { it.id }

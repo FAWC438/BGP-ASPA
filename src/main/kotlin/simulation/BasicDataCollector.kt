@@ -110,7 +110,7 @@ class BasicDataCollector(private val reporter: BasicReporter) : DataCollector,
     }
 
     /**
-     * Invoked to notify the listener of a new export notification.
+     * 调用以通知侦听器新的导出通知。
      */
     override fun onExport(notification: ExportNotification) {
         terminationTimes[notification.node.id] = notification.time
@@ -140,10 +140,9 @@ class BasicDataCollector(private val reporter: BasicReporter) : DataCollector,
                 .filterNot { it.protocol.selectedRoute.isValid() }
                 .count()
 
-        // If a node never exports a route then it will not be included in [terminationTimes]. In that case the
-        // termination time of that node is 0
+        // 如果节点从不导出路由，则它不会包含在 [terminationTimes] 中。在这种情况下，该节点的终止时间为 0
 
-        // The average termination time corresponds to the mean of the termination times of all nodes
+        // 平均终止时间对应于所有节点终止时间的平均值
         data.avgTerminationTime = terminationTimes.values.sum().div(nodeCount.toDouble())
     }
 

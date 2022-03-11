@@ -4,29 +4,23 @@ import core.routing.NodeID
 import core.routing.Route
 
 /**
- * Created on 08-11-2017
  *
- * @author David Fialho
+ * [Advertiser] 是一些可以宣传目的地的实体。此处的术语广告用于指代一个实体，该实体为某个目的地发起和新路由并传播到其邻居。
  *
- * An [Advertiser] is some entity that can advertise destinations. The term *advertise* here is
- * used to refer to an entity originating and new route for some destination and propagating to
- * its neighbors.
- *
- * @property id number that uniquely identifies the advertiser within some scope.
+ * @property id 在某个范围内唯一标识广告商的编号。
  */
 interface Advertiser<in R: Route> {
 
     val id: NodeID
 
     /**
-     * Has this advertiser originate [defaultRoute] for some destination and propagate this route
-     * through the network using any of the mechanisms implemented by this advertiser.
+     * 此广告商是否为某个目的地发起 [defaultRoute] 并使用此广告商实施的任何机制通过网络传播此路由。
      */
     fun advertise(defaultRoute: R)
 
     // TODO @refactor - remove this method, see RepetitionRunner
     /**
-     * Resets the state of the advertiser. This may be required before advertising.
+     * 重置广告商的状态。这可能需要在广告之前进行。
      */
     fun reset()
 }

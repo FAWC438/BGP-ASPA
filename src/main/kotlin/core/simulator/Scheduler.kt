@@ -2,73 +2,67 @@ package core.simulator
 
 import java.util.*
 
-// The time is represented by an integer value.
+// 时间由一个整数值表示。
 typealias Time = Int
 
 /**
- * Created on 22-07-2017
  *
- * @author David Fialho
- *
- * The [Scheduler] is the most important component of an event-drive simulator. It is responsible
- * for storing all events that occur during the simulation and deliver them according to their
- * scheduling times.
+ * [Scheduler] 是事件驱动模拟器中最重要的组件。它负责存储模拟过程中发生的所有事件，并根据它们的调度时间交付它们。
  */
 class Scheduler {
 
     /**
-     * A scheduled event associates a timestamp with an event. Events are scheduled according to
-     * this timestamp. Events with a lower timestamp come before events with an higher timestamp.
+     * 预定事件将时间戳与事件相关联。根据此时间戳安排事件。时间戳较低的事件先于时间戳较高的事件。
      */
     private class ScheduledEvent(val time: Time, val event: Event) : Comparable<ScheduledEvent> {
         override operator fun compareTo(other: ScheduledEvent): Int = time.compareTo(other.time)
     }
 
     /**
-     * Priority queue that keeps all scheduled events ordered according to their timestamps.
+     * 优先队列，使所有计划的事件根据其时间戳进行排序。
      */
     private val events = PriorityQueue<ScheduledEvent>()
 
     /**
-     * Keeps track of the current time. The scheduler's time corresponds to the time of the last
-     * event taken from the scheduler. Before any event is taken from this scheduler, the time is 0.
+     * 跟踪当前时间。调度器的时间对应于从调度器获取的最后一个事件的时间。在从此调度程序中获取任何事件之前，时间为 0。
      */
     var time: Time = 0
         private set
 
     /**
-     * Schedules an [event] to occur at some time given by [timestamp].
+     * 安排 [event] 在 [timestamp] 给定的某个时间发生。
      *
-     * @throws IllegalArgumentException if [timestamp] is lower than current [time].
+     * @throws IllegalArgumentException 如果 [timestamp] 低于当前 [time]。
      */
     @Throws(IllegalArgumentException::class)
     fun schedule(event: Event, timestamp: Time) {
 
         if (timestamp < time) {
-            throw IllegalArgumentException("scheduling time '$timestamp' is lower than the " +
-                    "current time '$time'")
+            throw IllegalArgumentException(
+                "scheduling time '$timestamp' is lower than the " +
+                        "current time '$time'"
+            )
         }
 
         events.add(ScheduledEvent(timestamp, event))
     }
 
     /**
-     * Schedules an [event] to occurs [interval] units of time from the current [time].
+     * 安排 [event] 从当前 [time] 发生 [interval] 时间单位。
      */
     fun scheduleFromNow(event: Event, interval: Time) {
         schedule(event, time + interval)
     }
 
     /**
-     * Checks whether or not the scheduler still has events in the queue.
+     * 检查调度程序队列中是否仍有事件。
      */
     fun hasEvents(): Boolean = !events.isEmpty()
 
     /**
-     * Returns the next event in the queue. As a side effect, this also may update this
-     * scheduler's current [time].
+     * 返回队列中的下一个事件。作为副作用，这也可能会更新此调度程序的当前 [time]。
      *
-     * @throws NoSuchElementException if the scheduler has no more events in the queue.
+     * @throws NoSuchElementException 如果调度程序队列中没有更多事件。
      */
     @Throws(NoSuchElementException::class)
     fun nextEvent(): Event {
@@ -80,7 +74,7 @@ class Scheduler {
     }
 
     /**
-     * Resets the scheduler. All events are removed from the queue and the time set back to 0.
+     * 重置调度程序。所有事件都从队列中删除，时间设置回 0。
      */
     fun reset() {
         events.clear()

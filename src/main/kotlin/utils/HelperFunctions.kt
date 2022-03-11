@@ -9,10 +9,10 @@ package utils
  */
 
 /**
- * Parses a string as a non-negative integer number and returns the result
+ * 将字符串解析为非负整数并返回结果
  *
- * @return the non-negative integer
- * @throws NumberFormatException - if the string is not a valid representation of a number.
+ * @return 非负整数
+ * @throws NumberFormatException - 如果字符串不是数字的有效表示。
  */
 @Throws(NumberFormatException::class)
 fun String.toNonNegativeInt(): Int {
