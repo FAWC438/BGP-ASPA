@@ -10,10 +10,9 @@ import core.simulator.currentTime
  *
  * @author David Fialho
  *
- * Base class for all notifications. All notifications are associated with the [time] at which
- * they were issued.
+ * 所有通知的基类。所有通知都与发出通知的 [时间] 相关联。
  *
- * @property time the time at which the notification was issued
+ * @property time 发出通知的时间
  */
 abstract class Notification(val time: Time = currentTime())
 

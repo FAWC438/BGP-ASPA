@@ -5,9 +5,7 @@ package core.simulator
  *
  * @author David Fialho
  *
- * A [TimerExpiredEvent] is used to implement the timer. It is issued when the timer starts and
- * it occurs (it is processed) when the timer expires. It triggers the [timer]'s [Timer.onExpired]
- * method.
+ * [TimerExpiredEvent] 用于实现定时器。它在计时器启动时发出，并在计时器到期时发生（处理）。它触发 [timer] 的 [Timer.onExpired] 方法。
  */
 class TimerExpiredEvent(private val timer: Timer) : Event {
 

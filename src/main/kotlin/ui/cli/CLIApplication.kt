@@ -237,4 +237,5 @@ private fun <R> timer(block: () -> R): Pair<Double, R> {
     val end = Instant.now()
 
     return Pair(Duration.between(start, end).toMillis().div(1000.0), value)
+    // return Pair(Duration.between(start, end).toMillis().div(1.0), value)
 }

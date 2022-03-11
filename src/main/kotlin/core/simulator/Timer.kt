@@ -5,13 +5,11 @@ package core.simulator
  *
  * @author David Fialho
  *
- * A [Timer] is used to schedule an action to be performed after some period of time.
- * Timer objects are one-time use objects. That is, a timer starts immediately after it is
- * created and it can only be started once. After expiring, that object is completely useless.
+ * [Timer] 用于安排在一段时间后执行的操作。计时器对象是一次性使用对象。也就是说，定时器在创建后立即启动，并且只能启动一次。
+ * 过期后，那个对象就完全没用了。
  *
- * There are two [Timer] implementations: EnabledTimer and DisabledTimer. The former is the
- * actual implementation of timer. The latter is just a dummy implementation to represent a timer
- * that is disabled, thus, never runs.
+ * 有两种 [Timer] 实现：EnabledTimer 和 DisabledTimer。
+ * 前者是定时器的实际实现。后者只是一个虚拟实现，表示禁用的计时器，因此永远不会运行。
  *
  * @property isRunning flag indicating whether or not the timer is running
  */
@@ -22,24 +20,24 @@ sealed class Timer {
     companion object Factory {
 
         /**
-         * Returns an enabled timer with the specified duration and action.
+         * 返回具有指定持续时间和操作的启用计时器。
          */
         fun enabled(duration: Time, action: () -> Unit): Timer = EnabledTimer(duration, action)
 
         /**
-         * Returns a disabled timer.
+         * 返回一个禁用的计时器。
          */
         fun disabled(): Timer = DisabledTimer
 
     }
 
     /**
-     * Cancels the timer if the timer as not expired yet.
+     * 如果计时器尚未到期，则取消计时器。
      */
     abstract fun cancel()
 
     /**
-     * Should be called when the timer expires.
+     * 应在计时器到期时调用。
      */
     abstract fun onExpired()
 
@@ -55,8 +53,7 @@ sealed class Timer {
         }
 
         /**
-         * Cancels the timer. If called before the timer expired, then the action of the timer is
-         * not executed when this timer does expire. After calling [cancel] the timer stops running.
+         * 取消定时器。如果在定时器超时之前调用，那么当定时器超时时定时器的动作不会被执行。调用 [cancel] 后，计时器停止运行。
          */
         override fun cancel() {
             isCanceled = true
@@ -64,8 +61,7 @@ sealed class Timer {
         }
 
         /**
-         * Called when the timer expires to perform [action]. The [action] is performed if the
-         * timer was not canceled.
+         * 当计时器到期执行 [action] 时调用。如果计时器未取消，则执行 [action]。
          */
         override fun onExpired() {
             if (!isCanceled) {
@@ -78,7 +74,7 @@ sealed class Timer {
 
     private object DisabledTimer : Timer() {
 
-        // A disabled timer never runs
+        // 禁用的计时器永远不会运行
         override val isRunning: Boolean = false
 
         override fun cancel() = Unit

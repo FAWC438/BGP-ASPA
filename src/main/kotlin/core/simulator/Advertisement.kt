@@ -7,12 +7,10 @@ import core.routing.Route
  *
  * @author David Fialho
  *
- * An [Advertisement] instance contains all information to describe an advertisement: the
- * [advertiser] performing it; the [route] being advertised; and the [time] at which the
- * advertisement occurs.
+ * [Advertisement] 实例包含描述通告的所有信息：执行它的 [advertiser]；被通告的[route]；以及通告发生的[time]。
  */
-data class Advertisement<R: Route>(
-        val advertiser: Advertiser<R>,
-        val route: R,
-        val time: Time = 0
+data class Advertisement<R : Route>(
+    val advertiser: Advertiser<R>,
+    val route: R,
+    val time: Time = 0
 )

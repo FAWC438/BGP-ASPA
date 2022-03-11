@@ -5,11 +5,10 @@ import core.routing.Node
 import core.simulator.notifications.Notification
 
 /**
- * Notification issued when a [node] has a [route] to send to its in-neighbors.
+ * 当一个 [node] 有一个 [route] 发送给它的邻居时发出通知。
  *
- * Exporting a route is different from sending a message. A route being exported indicates the
- * [node] has a new [route] to send to its in-neighbors. This may lead to zero or multiple
- * messages being sent: during one exportation, the node sends one message to each in-neighbor.
+ * 导出路由不同于发送消息。正在导出的路由表明 [node] 有一个新的 [route] 可以发送给它的邻居。
+ * 这可能导致发送零个或多个消息：在一次导出期间，节点向每个相邻节点发送一条消息。
  *
  * Created on 26-07-2017
  *
@@ -21,7 +20,7 @@ data class ExportNotification(
 ) : Notification()
 
 /**
- * Notification issued when a [node] learns a [route] from a [neighbor].
+ * 当 [node] 从 [neighbor] 学习 [route] 时发出通知。
  *
  * The route a node receives corresponds exactly to the route selected at the sender. However, in
  * a real network that is not the case. In a real network the route learned at a node from a
