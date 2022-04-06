@@ -5,15 +5,13 @@ import core.routing.Route
 import core.routing.emptyPath
 
 /**
- * Created on 20-07-2017
  *
- * @author David Fialho
  * 一条 BGP 路由由两个属性组成：LOCAL-PREF 和 AS-PATH。
  * LOCAL-PREF 由每个节点在本地分配，并指示该节点分配给每个路由的优先级。
  * AS-PATH 包含路由从原始广告者到持有该路由的当前节点所经过的节点序列。
  *
  * BGPRoute始终是不可变的实例！
-
+ *
  */
 sealed class BGPRoute : Route {
 

@@ -7,31 +7,25 @@ import utils.toNonNegativeInt
 import java.io.*
 import java.util.*
 
-/**
- * Created on 29-08-2017
- *
- * @author David Fialho
- */
-class InterdomainTopologyReader(reader: Reader, private val forcedMRAI: Time? = null)
-    : TopologyReader<BGPRoute>, Closeable {
+class InterdomainTopologyReader(reader: Reader, private val forcedMRAI: Time? = null) : TopologyReader<BGPRoute>,
+    Closeable {
 
     /**
-     * Provides option to create a reader with a file object.
+     * 提供使用文件对象创建阅读器的选项。
      */
     @Throws(FileNotFoundException::class)
-    constructor(file: File, forcedMRAI: Time? = null): this(FileReader(file), forcedMRAI)
+    constructor(file: File, forcedMRAI: Time? = null) : this(FileReader(file), forcedMRAI)
 
     private val parser = TopologyParser(reader)
 
-    private inner class InterdomainHandler(val builder: TopologyBuilder<BGPRoute>)
-        : TopologyParser.Handler {
+    private inner class InterdomainHandler(val builder: TopologyBuilder<BGPRoute>) : TopologyParser.Handler {
 
         /**
-         * Invoked when reading the stream when a new node item is read.
+         * 在读取新节点项时读取流时调用。
          *
-         * @param id          the ID of the node parse
-         * @param values      sequence of values associated with the node
-         * @param currentLine line number where the node was parsed
+         * @param id          节点解析的ID
+         * @param values      与节点关联的值序列
+         * @param currentLine 解析节点的行号
          */
         override fun onNodeItem(id: NodeID, values: List<String>, currentLine: Int) {
 
@@ -41,7 +35,7 @@ class InterdomainTopologyReader(reader: Reader, private val forcedMRAI: Time? = 
 
             val protocolLabel = values[0]
 
-            // Use the "forced MRAI" value if set. Otherwise, use the value specified in the topology file.
+            // 如果设置，请使用“强制 MRAI”值。否则，使用拓扑文件中指定的值。
             val mrai = forcedMRAI ?: try {
                 values[1].toNonNegativeInt()
             } catch (e: NumberFormatException) {
@@ -56,8 +50,9 @@ class InterdomainTopologyReader(reader: Reader, private val forcedMRAI: Time? = 
                 "ssbgp2" -> SSBGP2(mrai)
                 "issbgp2" -> ISSBGP2(mrai)
                 else -> throw ParseException(
-                        "protocol label `$protocolLabel` was not recognized: supported labels are BGP, " +
-                                "SSBGP, ISSBGP, SSBGP2, and ISSBGP2", currentLine)
+                    "protocol label `$protocolLabel` was not recognized: supported labels are BGP, " +
+                            "SSBGP, ISSBGP, SSBGP2, and ISSBGP2", currentLine
+                )
             }
 
             try {
@@ -69,12 +64,12 @@ class InterdomainTopologyReader(reader: Reader, private val forcedMRAI: Time? = 
         }
 
         /**
-         * Invoked when reading the stream when a new link item is read.
+         * 在读取新链接项时读取流时调用。
          *
-         * @param tail        the ID of the tail node
-         * @param head        the ID of the head node
-         * @param values      sequence of values associated with the link item
-         * @param currentLine line number where the node was parsed
+         * @param tail        尾节点ID
+         * @param head        头节点ID
+         * @param values      与链接项关联的值序列
+         * @param currentLine 解析节点的行号
          */
         override fun onLinkItem(tail: NodeID, head: NodeID, values: List<String>, currentLine: Int) {
 
@@ -96,13 +91,12 @@ class InterdomainTopologyReader(reader: Reader, private val forcedMRAI: Time? = 
     }
 
     /**
-     * Returns a Topology object that is represented in the input source.
+     * 返回在输入源中表示的拓扑对象。
      *
-     * The topology object uses a BGP like protocol and the extenders assigned to the links are defined in the
-     * interdomain routing policies.
+     * 拓扑对象使用类似 BGP 的协议，分配给链路的扩展器在域间路由策略中定义。
      *
-     * @throws IOException    If an I/O error occurs
-     * @throws ParseException if a topology object can not be created due to incorrect representation
+     * @throws IOException    如果发生 IO 错误
+     * @throws ParseException 如果由于不正确的表示而无法创建拓扑对象
      */
     @Throws(IOException::class, ParseException::class)
     override fun read(): Topology<BGPRoute> {
@@ -112,7 +106,7 @@ class InterdomainTopologyReader(reader: Reader, private val forcedMRAI: Time? = 
     }
 
     /**
-     * Closes the stream and releases any system resources associated with it.
+     * 关闭流并释放与其关联的任何系统资源。
      */
     override fun close() {
         parser.close()

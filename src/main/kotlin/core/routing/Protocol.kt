@@ -1,37 +1,32 @@
 package core.routing
 
 /**
- * Base interface for any protocol implementation.
+任何协议实现的基本接口。所有的协议实现都必须实现这个接口。
  *
- * All protocol implementations must implement this interface.
+ * @property selectedRoute 此协议选择的路由
  *
- * @property selectedRoute route selected by this protocol
- *
- * Created on 19-07-17
- *
- * @author David Fialho
  */
-interface Protocol<R: Route> {
+interface Protocol<R : Route> {
 
     /**
-     * The route selected by the protocol. This route may change during a simulation execution.
+     * 协议选择的路由。该路线可能会在模拟执行期间发生变化。
      */
     val selectedRoute: R
 
     /**
-     * Sets the local [route] for [node].
+     * 为 [node] 设置本地 [route]。
      */
     fun setLocalRoute(node: Node<R>, route: R)
 
     /**
-     * Have the protocol process and incoming [message].
+     * 有协议进程和传入的[message]。
      *
-     * The receiving node calls this method when it receives a message.
+     * 接收节点在收到消息时调用此方法。
      */
     fun process(message: Message<R>)
 
     /**
-     * Resets the state of the protocol to its initial state.
+     * 将协议的状态重置为其初始状态。
      */
     fun reset()
 

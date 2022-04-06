@@ -58,8 +58,8 @@ class RouteSelector<R : Route> private constructor(
         /**
          * 返回包装现有路由 [table] 的 [RouteSelector]。初始化时，选择器会遍历存储在 [table] 中的所有路由，并根据 [compare] 选择最佳路由。
          *
-         * @param table   the table to be wrapped by the selector
-         * @param compare the compare method used to compare route preferences
+         * @param table   要被选择器包裹的表
+         * @param compare 用于比较路线偏好的比较方法
          */
         fun <R : Route> wrap(table: RoutingTable<R>, compare: (R, R) -> Int): RouteSelector<R> {
             return RouteSelector(table, compare)
@@ -187,7 +187,7 @@ class RouteSelector<R : Route> private constructor(
     /**
      * 强制选择器重新评估所有候选路线并重新选择其中的最佳路线。
      */
-    fun reselect() {
+    private fun reselect() {
 
         selectedRoute = table.invalidRoute
         selectedNeighbor = null

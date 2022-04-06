@@ -1,25 +1,19 @@
 package core.routing
 
 /**
- * Data class containing all information contained in a routing message.
+ * 包含路由消息中包含的所有信息的数据类。
  *
- * Nodes participating in a distributed routing protocol exchange routes, containing routing
- * information, with neighboring nodes to provide connectivity to each other. Routes are carried
- * by messages.
+ * 参与分布式路由协议的节点与相邻节点交换包含路由信息的路由，以相互提供连接。路由由消息携带。
  *
- * As with any message, a routing message holds the [sender] and [recipient] of the message. Most
- * importantly, a message carries a [route], sent by the [sender] to the [recipient].
+ *与任何消息一样，路由消息包含消息的 [sender] 和 [recipient]。最重要的是，一条消息携带一条[route]，由[sender]发送给[recipient]。
  *
- * @property sender    the node that sent the message
- * @property recipient the node to receive the message
- * @property route     the route sent by the sender
+ * @property sender    发送消息的节点
+ * @property recipient 接收消息的节点
+ * @property route     发送者发送的路由
  *
- * Created on 21-07-2017
- *
- * @author David Fialho
  */
 data class Message<R : Route>(
-        val sender: Node<R>,
-        val recipient: Node<R>,
-        val route: R
+    val sender: Node<R>,
+    val recipient: Node<R>,
+    val route: R
 )

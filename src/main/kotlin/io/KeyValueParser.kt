@@ -6,41 +6,34 @@ import java.io.IOException
 import java.io.Reader
 
 /**
- * Created on 29-08-2017
  *
- * @author David Fialho
+ * 用于键值格式流的解析器。
  *
- * A parser for key-values formatted streams.
- *
- * A key-values formatted stream have multiple entries (one in each line) with the form:
+ * 键值格式的流有多个条目（每行一个），格式如下：
  *
  *   key = value1 | value2 | ... | valueN
  *
- * The key is separated from the values with an equals sign '='.
- * A key can be associated with multiple values. Each one separated by a '|' character.
+ * 用等号“=”将键与值分开。
+ * 一个键可以与多个值相关联。每一个都用'|'隔开特点。
  *
- * Each parser is associated with an handler. This handler is notified every time a new entry is parsed from the stream.
- * The handler is then responsible for parsing the key and values, ensuring they are valid according to the required
- * specifications.
+ * 每个解析器都与一个处理程序相关联。每次从流中解析新条目时都会通知此处理程序。然后处理程序负责解析键和值，确保它们根据所需的规范有效。
  *
- * Entries are parsed in the same order they are described in the stream. Thus, the handler is guaranteed to be
- * notified of new entries in that exact same order.
+ * 条目按照它们在流中描述的相同顺序进行解析。因此，保证处理程序以完全相同的顺序被通知新条目。
  */
-class KeyValueParser(reader: Reader): Closeable {
+class KeyValueParser(reader: Reader) : Closeable {
 
     /**
-     * Handlers are notified once a new key-value entry is parsed.
+     * 一旦解析了新的键值条目，就会通知处理程序。
      *
-     * Subclasses should use this method to parse the key and values, ensuring they are valid according to their
-     * unique specifications.
+     * 子类应该使用这种方法来解析键和值，确保它们根据它们的唯一规范是有效的。
      */
     interface Handler {
 
         /**
-         * Invoked when a new entry is parsed.
+         * 解析新条目时调用。
          *
-         * @param entry       the parsed entry
-         * @param currentLine line number where the node was parsed
+         * @param entry       解析的条目
+         * @param currentLine 解析节点的行号
          */
         fun onEntry(entry: Entry, currentLine: Int)
 
@@ -49,28 +42,28 @@ class KeyValueParser(reader: Reader): Closeable {
     data class Entry(val key: String, val values: List<String>)
 
     /**
-     * The underlying reader used to read the stream.
+     * 用于读取流的底层读取器。
      */
     private val reader = BufferedReader(reader)
 
     /**
-     * Parses the stream, invoking the handler every time a new entry is parsed.
+     * 解析流，每次解析新条目时调用处理程序。
      *
-     * @param handler the handler that is notified when a new entry is parsed
-     * @throws IOException    If an I/O error occurs
-     * @throws ParseException if the format of the stream is not valid
+     * @param handler 解析新条目时通知的处理程序
+     * @throws IOException    如果发生 IO 错误
+     * @throws ParseException 如果流的格式无效
      */
     @Throws(IOException::class, ParseException::class)
-    fun parse(handler: KeyValueParser.Handler) {
+    fun parse(handler: Handler) {
 
-        // Read the first line - throw error if empty
+        // 阅读第一行 - 如果为空则抛出错误
         var line: String? = reader.readLine() ?: throw ParseException("file is empty", lineNumber = 1)
 
         var currentLine = 1
         while (line != null) {
 
-            // Ignore blank lines
-            if (!line.isBlank()) {
+            // 忽略空行
+            if (line.isNotBlank()) {
                 val entry = parseEntry(line, currentLine)
                 handler.onEntry(entry, currentLine)
             }
@@ -82,15 +75,17 @@ class KeyValueParser(reader: Reader): Closeable {
 
     private fun parseEntry(line: String, currentLine: Int): Entry {
 
-        // Each line must have a key separated from its values with an equal sign
+        // 每行必须有一个键与它的值用等号分隔
         // e.g. node = 1
 
-        // Split the key from the values
+        // 从值中拆分键
         val keyAndValues = line.split("=", limit = 2)
 
         if (keyAndValues.size < 2) {
-            throw ParseException("line $currentLine$ is missing an equal sign '=' to " +
-                    "distinguish between key and values", currentLine)
+            throw ParseException(
+                "line $currentLine$ is missing an equal sign '=' to " +
+                        "distinguish between key and values", currentLine
+            )
         }
 
         val key = keyAndValues[0].trim()
@@ -100,7 +95,7 @@ class KeyValueParser(reader: Reader): Closeable {
     }
 
     /**
-     * Closes the stream and releases any system resources associated with it.
+     * 关闭流并释放与其关联的任何系统资源。
      */
     override fun close() {
         reader.close()

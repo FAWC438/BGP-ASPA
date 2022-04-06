@@ -5,15 +5,11 @@ import core.routing.Path
 import core.routing.emptyPath
 
 /**
- * Created on 26-07-2017
- *
- * @author David Fialho
- *
- * This file contains methods to construct interdomain routes.
+ * 该文件包含构建域间路由的方法。
  */
 
 
-// LOCAL-PREFs for each interdomain route
+// 每个域间路由的 LOCAL-PREF
 const val peerplusLocalPreference: Int = 500000
 const val peerstarLocalPreference: Int = 400000
 const val customerLocalPreference: Int = 300000

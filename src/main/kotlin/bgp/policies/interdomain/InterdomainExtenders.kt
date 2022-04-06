@@ -4,11 +4,6 @@ import bgp.BGPRoute
 import core.routing.Extender
 import core.routing.Node
 
-/**
- * Created on 26-07-2017
- *
- * @author David Fialho
- */
 
 object CustomerExtender : Extender<BGPRoute> {
 

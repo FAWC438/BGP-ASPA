@@ -5,12 +5,7 @@ import core.routing.*
 import core.simulator.Time
 import core.simulator.Timer
 
-/**
- * Created on 21-07-2017
- *
- * @author David Fialho
- */
-abstract class BaseBGP(val mrai: Time, routingTable: RoutingTable<BGPRoute>) : Protocol<BGPRoute> {
+abstract class BaseBGP(private val mrai: Time, routingTable: RoutingTable<BGPRoute>) : Protocol<BGPRoute> {
 
     /**
      * 包含候选路由的路由表。
@@ -102,7 +97,9 @@ abstract class BaseBGP(val mrai: Time, routingTable: RoutingTable<BGPRoute>) : P
      * @return 如果路由的 AS-PATH 不包含学习路由的节点，则返回导入的路由；如果路由的 AS-PATH 包含学习节点，则返回“无效”。
      * 请注意，如果导入的路由无效，它也可能返回无效路由。
      */
-    protected fun learn(node: Node<BGPRoute>, sender: Node<BGPRoute>, route: BGPRoute): BGPRoute {
+    private fun learn(node: Node<BGPRoute>, sender: Node<BGPRoute>, route: BGPRoute): BGPRoute {
+
+        // TODO: 在这里更改ASPA策略
 
         return if (node in route.asPath) {
             // 通知 implementations 检测到循环
@@ -119,7 +116,7 @@ abstract class BaseBGP(val mrai: Time, routingTable: RoutingTable<BGPRoute>) : P
      *
      * @param node  导出节点的节点路由
      */
-    protected fun export(node: Node<BGPRoute>) {
+    private fun export(node: Node<BGPRoute>) {
 
         if (mraiTimer.isRunning) {
             // MRAI 定时器运行时不导出路由
@@ -160,15 +157,16 @@ abstract class BaseBGP(val mrai: Time, routingTable: RoutingTable<BGPRoute>) : P
     /**
      * 当协议检测到路由环路时调用。
      */
-    abstract protected fun onLoopDetected(node: Node<BGPRoute>, sender: Node<BGPRoute>, route: BGPRoute)
+    protected abstract fun onLoopDetected(node: Node<BGPRoute>, sender: Node<BGPRoute>, route: BGPRoute)
 
 }
 
 /**
- * BGP: 当检测到循环时，它不会做任何额外的事情。
+ * BGP
  */
 class BGP(mrai: Time = 0, routingTable: RoutingTable<BGPRoute> = RoutingTable.empty(BGPRoute.invalid())) :
     BaseBGP(mrai, routingTable) {
 
+    // 当检测到循环时，它不会做任何额外的事情。
     override fun onLoopDetected(node: Node<BGPRoute>, sender: Node<BGPRoute>, route: BGPRoute) = Unit
 }

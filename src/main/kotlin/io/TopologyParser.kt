@@ -5,13 +5,9 @@ import utils.toNonNegativeInt
 import java.io.Closeable
 import java.io.IOException
 import java.io.Reader
+import java.util.*
 
-/**
- * Created on 29-08-2017
- *
- * @author David Fialho
- */
-class TopologyParser(reader: Reader): Closeable {
+class TopologyParser(reader: Reader) : Closeable {
 
     /**
      * Handlers are notified once a new topology item (a node or a link) is parsed.
@@ -20,58 +16,59 @@ class TopologyParser(reader: Reader): Closeable {
     interface Handler {
 
         /**
-         * Invoked when reading the stream when a new node item is read.
+         * 在读取新节点项时读取流时调用。
          *
-         * @param id          the ID of the node parse
-         * @param values      sequence of values associated with the node
-         * @param currentLine line number where the node was parsed
+         * @param id          节点解析的ID
+         * @param values      与节点关联的值序列
+         * @param currentLine 解析节点的行号
          */
         fun onNodeItem(id: NodeID, values: List<String>, currentLine: Int)
 
         /**
-         * Invoked when reading the stream when a new link item is read.
+         * 在读取新链接项时读取流时调用。
          *
-         * @param tail        the ID of the tail node
-         * @param head        the ID of the head node
-         * @param values      sequence of values associated with the link
-         * @param currentLine line number where the node was parsed
+         * @param tail        尾节点ID
+         * @param head        头节点ID
+         * @param values      与链接关联的值序列
+         * @param currentLine 解析节点的行号
          */
         fun onLinkItem(tail: NodeID, head: NodeID, values: List<String>, currentLine: Int)
 
     }
 
-    private class KeyValueHandler(val handler: TopologyParser.Handler): KeyValueParser.Handler {
+    private class KeyValueHandler(val handler: Handler) : KeyValueParser.Handler {
 
         /**
-         * Invoked when a new entry is parsed.
+         * 解析新条目时调用。
          *
-         * @param entry       the parsed entry
-         * @param currentLine line number where the node was parsed
+         * @param entry       解析的条目
+         * @param currentLine 解析节点的行号
          */
         override fun onEntry(entry: KeyValueParser.Entry, currentLine: Int) {
 
             val values = entry.values
 
-            when (entry.key.toLowerCase()) {
+            when (entry.key.lowercase(Locale.getDefault())) {
                 "node" -> {
 
-                    // The first value is the node ID - this value is mandatory
+                    // 第一个值是节点 ID - 这个值是强制性的
                     if (values.isEmpty() || (values.size == 1 && values[0].isEmpty())) {
                         throw ParseException("node entry is missing the ID value", currentLine)
                     }
 
                     val nodeID = parseNodeID(values[0], currentLine)
 
-                    // The remaining values should be parsed by the Topology Reader according to
-                    // its required specifications
+                    // 其余值应由拓扑阅读器根据其所需规范进行解析
                     handler.onNodeItem(nodeID, values.subList(1, values.lastIndex + 1), currentLine)
                 }
                 "link" -> {
 
                     // The first two values are the tail and head nodes of the link
                     if (values.size < 2 || values[0].isBlank() || values[1].isBlank()) {
-                        throw ParseException("link entry is missing required values: tail node ID and/or head node ID",
-                                currentLine)
+                        throw ParseException(
+                            "link entry is missing required values: tail node ID and/or head node ID",
+                            currentLine
+                        )
                     }
 
                     val tailID = parseNodeID(values[0], currentLine)
@@ -97,24 +94,23 @@ class TopologyParser(reader: Reader): Closeable {
     }
 
     /**
-     * The topology parser is based on a key-value parser.
-     * It uses this parser to handle identifying entries.
+     * 拓扑解析器基于键值解析器。它使用这个解析器来处理识别条目。
      */
     private val parser = KeyValueParser(reader)
 
     /**
-     * Parses the stream invoking the handler once a new node or link is parsed.
+     * 解析新节点或链接后，解析调用处理程序的流。
      *
-     * @throws IOException    If an I/O error occurs
-     * @throws ParseException if a topology object can not be created due to incorrect representation
+     * @throws IOException    如果发生 IO 错误
+     * @throws ParseException 如果由于不正确的表示而无法创建拓扑对象
      */
     @Throws(IOException::class, ParseException::class)
-    fun parse(handler: TopologyParser.Handler) {
+    fun parse(handler: Handler) {
         parser.parse(KeyValueHandler(handler))
     }
 
     /**
-     * Closes the stream and releases any system resources associated with it.
+     * 关闭流并释放与其关联的任何系统资源。
      */
     override fun close() {
         parser.close()

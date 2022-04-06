@@ -12,3 +12,5 @@ Simulation;Delay Seed;Termination Time (Total);Termination Time (Avg.);Message C
 1;1648738037223;2;1.3333333333333333;6;0;Yes;2
 Simulation;Delay Seed;Termination Time (Total);Termination Time (Avg.);Message Count;Detection Count;Terminated;Disconnected Count
 1;1648744586747;2;1.3333333333333333;6;0;Yes;2
+Simulation;Delay Seed;Termination Time (Total);Termination Time (Avg.);Message Count;Detection Count;Terminated;Disconnected Count
+1;1649259311037;2;1.3333333333333333;6;0;Yes;2
