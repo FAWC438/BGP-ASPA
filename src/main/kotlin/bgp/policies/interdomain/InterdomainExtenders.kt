@@ -9,10 +9,12 @@ object CustomerExtender : Extender<BGPRoute> {
 
     override fun extend(route: BGPRoute, sender: Node<BGPRoute>): BGPRoute {
 
+        val localPref = if (sender.protocol.attackType >= 2) customerLocalPreference else route.localPref
+
         return when {
-            // peer 或者 provider 将不能够通过 customer 关系链路进行路由
-            route.localPref <= peerLocalPreference || route.localPref == peerstarLocalPreference -> BGPRoute.invalid()
-            else -> customerRoute(asPath = route.asPath.append(sender))
+            // peer 或者 provider 将不能够通过 customer 关系链路进行路由？
+            localPref <= peerLocalPreference -> BGPRoute.invalid()
+            else -> customerRoute(asPath = route.asPath.append(sender, "c"))
         }
     }
 
@@ -22,9 +24,12 @@ object PeerExtender : Extender<BGPRoute> {
 
     override fun extend(route: BGPRoute, sender: Node<BGPRoute>): BGPRoute {
 
+        val localPref =
+            if (sender.protocol.attackType == 3 || sender.protocol.attackType == 1) customerLocalPreference else route.localPref
+
         return when {
-            route.localPref <= peerLocalPreference || route.localPref == peerstarLocalPreference -> BGPRoute.invalid()
-            else -> peerRoute(asPath = route.asPath.append(sender))
+            localPref <= peerLocalPreference -> BGPRoute.invalid()
+            else -> peerRoute(asPath = route.asPath.append(sender, "r"))
         }
     }
 
@@ -34,15 +39,23 @@ object ProviderExtender : Extender<BGPRoute> {
 
     override fun extend(route: BGPRoute, sender: Node<BGPRoute>): BGPRoute {
 
-        return when {
-            //  !route.isValid() -> BGPRoute.invalid()
-            route.localPref <= peerLocalPreference || route.localPref == peerstarLocalPreference -> BGPRoute.invalid()
-            else -> providerRoute(asPath = route.asPath.append(sender))
+//        val localPref =
+//            if (sender.protocol.attackType == 3 || sender.protocol.attackType == 1) customerLocalPreference else route.localPref
+//
+//        return when {
+//            //  !route.isValid() -> BGPRoute.invalid()
+//            localPref <= peerLocalPreference -> BGPRoute.invalid()
+//            else -> providerRoute(asPath = route.asPath.append(sender, "p"))
+
+        return when (sender.protocol.attackType) {
+            3, 1 -> BGPRoute.invalid()
+            else -> providerRoute(asPath = route.asPath.append(sender, "p"))
         }
     }
 
 }
 
+// ASPA模拟中暂不支持此关系
 object PeerplusExtender : Extender<BGPRoute> {
 
     override fun extend(route: BGPRoute, sender: Node<BGPRoute>): BGPRoute {
@@ -55,6 +68,7 @@ object PeerplusExtender : Extender<BGPRoute> {
 
 }
 
+// ASPA模拟中暂不支持此关系
 object PeerstarExtender : Extender<BGPRoute> {
 
     override fun extend(route: BGPRoute, sender: Node<BGPRoute>): BGPRoute {
@@ -67,6 +81,7 @@ object PeerstarExtender : Extender<BGPRoute> {
 
 }
 
+// ASPA模拟中暂不支持此关系
 object SiblingExtender : Extender<BGPRoute> {
 
     override fun extend(route: BGPRoute, sender: Node<BGPRoute>): BGPRoute {

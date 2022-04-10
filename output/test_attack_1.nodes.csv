@@ -3,9 +3,15 @@ Simulation;Node;Local Preference;Next-hop;Path Length;Termination Time
 1;2;r;1;1;2
 1;3;c;1;1;2
 1;4;r;3;2;4
-1;5;•;;0;0
-1;6;•;;0;0
-1;7;•;;0;0
+1;5;r;2;2;4
+1;6;p;2;2;4
+Simulation;Node;Local Preference;Next-hop;Path Length;Termination Time
+1;1;◦;;0;0
+1;2;r;1;1;2
+1;3;c;1;1;2
+1;4;r;3;2;4
+1;5;r;2;2;4
+1;6;p;2;2;4
 Simulation;Node;Local Preference;Next-hop;Path Length;Termination Time
 1;1;◦;;0;0
 1;2;r;1;1;2
@@ -13,11 +19,17 @@ Simulation;Node;Local Preference;Next-hop;Path Length;Termination Time
 1;4;r;3;2;4
 1;5;•;;0;0
 1;6;•;;0;0
-1;7;•;;0;0
 Simulation;Node;Local Preference;Next-hop;Path Length;Termination Time
 1;1;◦;;0;0
 1;2;r;1;1;2
 1;3;p;1;1;2
 1;4;•;;0;0
-1;5;•;;0;0
+1;5;r;2;2;4
 1;6;•;;0;0
+Simulation;Node;Local Preference;Next-hop;Path Length;Termination Time
+1;1;◦;;0;0
+1;2;r;1;1;2
+1;3;p;1;1;2
+1;4;•;;0;0
+1;5;r;2;2;4
+1;6;c;2;2;4

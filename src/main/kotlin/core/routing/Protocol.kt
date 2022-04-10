@@ -14,6 +14,19 @@ interface Protocol<R : Route> {
     val selectedRoute: R
 
     /**
+     * 判断是否为路由泄露攻击者
+     *
+     * 攻击者有不同的类型
+     *
+     * - 类型0 - 不是攻击者
+     * - 类型1 - 将 peer 的路由泄露给其他的 peer/provider，即本地优先级变为 customer
+     * - 类型2 - 将 provider 的路由泄露给其他的 peer/provider，即本地优先级变为 customer
+     * - 类型3 - 包含以上两种情况的攻击者节点
+     *
+     */
+    var attackType: Int
+
+    /**
      * 为 [node] 设置本地 [route]。
      */
     fun setLocalRoute(node: Node<R>, route: R)

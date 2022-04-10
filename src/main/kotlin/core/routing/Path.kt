@@ -1,5 +1,8 @@
 package core.routing
 
+import java.util.*
+import kotlin.collections.ArrayList
+
 /**
  * 路径是在网络中形成路径的节点序列。
  *
@@ -16,7 +19,10 @@ package core.routing
  * @property size 路径中的节点数
  *
  */
-class Path internal constructor(private val nodes: List<Node<*>>) : Iterable<Node<*>> {
+class Path internal constructor(
+    private val nodes: List<Node<*>>,
+    private val relations: List<String> = emptyList()
+) : Iterable<Node<*>> {
 
     val size: Int = nodes.size
 
@@ -31,7 +37,19 @@ class Path internal constructor(private val nodes: List<Node<*>>) : Iterable<Nod
     }
 
     /**
-     * 返回路径的下一跳节点。那是该路径末端的节点。如果路径为空，则返回 null。
+     * 返回一个新的路径实例，其中 [node] 以及 [relation] 添加到（附加）此路径的末尾
+     */
+    fun append(node: Node<*>, relation: String): Path {
+        val nodesCopy = ArrayList(nodes)
+        val relationsCopy = ArrayList(relations)
+        nodesCopy.add(node)
+        relationsCopy.add(relation.lowercase(Locale.getDefault()))
+
+        return Path(nodesCopy, relationsCopy)
+    }
+
+    /**
+     * 返回路径下一跳节点。那是该路径末端的节点。如果路径为空，则返回 null。
      */
     fun nextHop(): Node<*>? {
         return nodes.lastOrNull()
@@ -63,6 +81,13 @@ class Path internal constructor(private val nodes: List<Node<*>>) : Iterable<Nod
     }
 
     /**
+     * 返回路径节点关系的迭代器。
+     */
+    fun relationIterator(): Iterator<String> {
+        return relations.iterator()
+    }
+
+    /**
      * 如果两条路径以完全相同的顺序具有完全相同的节点，则它们被认为是相等的。
      */
     override fun equals(other: Any?): Boolean {
@@ -81,7 +106,7 @@ class Path internal constructor(private val nodes: List<Node<*>>) : Iterable<Nod
     }
 
     override fun toString(): String {
-        return "$nodes"
+        return "$nodes | $relations"
     }
 
 }

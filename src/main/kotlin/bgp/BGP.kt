@@ -20,6 +20,8 @@ abstract class BaseBGP(private val mrai: Time, routingTable: RoutingTable<BGPRou
     override val selectedRoute: BGPRoute
         get() = routingTable.getSelectedRoute()
 
+    override var attackType: Int = 0
+
     var mraiTimer = Timer.disabled()
         protected set
 
@@ -59,6 +61,8 @@ abstract class BaseBGP(private val mrai: Time, routingTable: RoutingTable<BGPRou
      * 处理节点引入的BGP路由。
      * 可能会更新路由表和选定的路由邻居。
      *
+     * TODO:ASPA防御节点需要考虑修改该方法
+     *
      * @param node          导入路由的节点
      * @param neighbor      导出路由的邻居
      * @param importedRoute [node]导入的路由
@@ -69,6 +73,8 @@ abstract class BaseBGP(private val mrai: Time, routingTable: RoutingTable<BGPRou
         val previousSelectedRoute = routingTable.getSelectedRoute()
 
         val learnedRoute = learn(node, neighbor, importedRoute)
+
+        // TODO:在通知中应当体现防御过程
         BGPNotifier.notify(LearnNotification(node, learnedRoute, neighbor))
 
         val updated = routingTable.update(neighbor, learnedRoute)
@@ -100,6 +106,7 @@ abstract class BaseBGP(private val mrai: Time, routingTable: RoutingTable<BGPRou
     private fun learn(node: Node<BGPRoute>, sender: Node<BGPRoute>, route: BGPRoute): BGPRoute {
 
         // TODO: 在这里更改ASPA策略
+        println(route.asPath)
 
         return if (node in route.asPath) {
             // 通知 implementations 检测到循环

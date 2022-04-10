@@ -24,7 +24,7 @@ class Node<R : Route>(override val id: NodeID, val protocol: Protocol<R>) : Adve
     /**
      * 包含此节点的邻居的集合。
      */
-    val mutableInNeighbors = ArrayList<Neighbor<R>>()
+    private val mutableInNeighbors = ArrayList<Neighbor<R>>()
     val inNeighbors: Collection<Neighbor<R>>
         get() = mutableInNeighbors
 

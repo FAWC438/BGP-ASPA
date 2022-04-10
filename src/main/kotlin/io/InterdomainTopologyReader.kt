@@ -45,13 +45,15 @@ class InterdomainTopologyReader(reader: Reader, private val forcedMRAI: Time? = 
             // TODO @refactor - make this case sensitive
             val protocol = when (protocolLabel.lowercase(Locale.getDefault())) {
                 "bgp" -> BGP(mrai)
+                "attack1" -> Attacker(mrai, aType = 1)
+                "attack2" -> Attacker(mrai, aType = 2)
+                "attack3" -> Attacker(mrai, aType = 3)
                 "ssbgp" -> SSBGP(mrai)
                 "issbgp" -> ISSBGP(mrai)
                 "ssbgp2" -> SSBGP2(mrai)
                 "issbgp2" -> ISSBGP2(mrai)
                 else -> throw ParseException(
-                    "protocol label `$protocolLabel` was not recognized: supported labels are BGP, " +
-                            "SSBGP, ISSBGP, SSBGP2, and ISSBGP2", currentLine
+                    "protocol label `$protocolLabel` was not recognized ", currentLine
                 )
             }
 

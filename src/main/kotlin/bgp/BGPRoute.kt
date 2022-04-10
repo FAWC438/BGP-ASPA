@@ -79,7 +79,7 @@ sealed class BGPRoute : Route {
 
         if (localPref != other.localPref) return false
 
-        // trick to avoid having to compare each node of the AS-paths most times
+        // 避免大多数时候必须比较 AS 路径的每个节点的技巧
         if (asPath.size != other.asPath.size) return false
 
         if (asPath != other.asPath) return false
