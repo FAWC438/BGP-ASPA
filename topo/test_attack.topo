@@ -1,5 +1,5 @@
 node = 1 | BGP | 0
-node = 2 | Attack3 | 0
+node = 2 | Attack2 | 0
 node = 3 | BGP | 0
 node = 4 | BGP | 0
 node = 5 | BGP | 0

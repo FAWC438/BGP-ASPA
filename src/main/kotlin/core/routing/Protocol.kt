@@ -18,13 +18,14 @@ interface Protocol<R : Route> {
      *
      * 攻击者有不同的类型
      *
-     * - 类型0 - 不是攻击者
-     * - 类型1 - 将 peer 的路由泄露给其他的 peer/provider，即本地优先级变为 customer
-     * - 类型2 - 将 provider 的路由泄露给其他的 peer/provider，即本地优先级变为 customer
+     * - 类型0 - 普通节点
+     * - 类型1 - 将 provider/peer 的路由泄露给其他的 peer，即本地优先级变为 customer
+     * - 类型2 - 将 provider/peer 的路由泄露给其他的 provider，即本地优先级变为 customer
      * - 类型3 - 包含以上两种情况的攻击者节点
+     * - 类型4 - ASPA防御节点
      *
      */
-    var attackType: Int
+    var nodeType: Int
 
     /**
      * 为 [node] 设置本地 [route]。

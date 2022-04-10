@@ -22,7 +22,10 @@ abstract class BaseBGP(private val mrai: Time, routingTable: RoutingTable<BGPRou
     override val selectedRoute: BGPRoute
         get() = routingTable.getSelectedRoute()
 
-    override var attackType: Int = 0
+    /**
+     * 默认为普通节点
+     */
+    override var nodeType: Int = 0
 
     var mraiTimer = Timer.disabled()
         protected set
@@ -118,15 +121,17 @@ abstract class BaseBGP(private val mrai: Time, routingTable: RoutingTable<BGPRou
             /**
              * 以下为ASPA防御措施
              *
-             * 具体为判断ASPath中是否存在前后关系异常的链路，是，则说明该链路为路由泄露链路；否则反之
+             * 具体为判断ASPath中是否存在前后关系异常的链路，是，则说明该链路为路由泄露链路；否则反之，并进行正常的路由学习
              *
              */
-            var relationPair = Pair("", "")
+            if (node.protocol.nodeType == 4) {
+                var relationPair = Pair("", "")
 
-            for (s in route.asPath.getRelations()) {
-                relationPair = Pair(relationPair.second, s)
-                if (relationPair in leakingRelations)
-                    return BGPRoute.leakingRoute(leakingRelations.indexOf(relationPair))
+                for (s in route.asPath.getRelations()) {
+                    relationPair = Pair(relationPair.second, s)
+                    if (relationPair in leakingRelations)
+                        return BGPRoute.leakingRoute(leakingRelations.indexOf(relationPair))
+                }
             }
 
             return route

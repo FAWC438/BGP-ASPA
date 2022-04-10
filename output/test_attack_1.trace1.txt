@@ -8,7 +8,9 @@
    2   | LEARN  |    3     | (p, 1) via 1
    2   | SELECT |    3     | (p, 1) over •
    2   | EXPORT |    3     | (p, 1)
-   4   | LEARN  |    5     | (•, ) via 2
+   4   | LEARN  |    5     | • via 2
    4   | LEARN  |    2     | • via 3
    4   | LEARN  |    4     | • via 3
-   4   | LEARN  |    6     | (•, ) via 2
+   4   | LEARN  |    6     | (c, 1, 2) via 2
+   4   | SELECT |    6     | (c, 1, 2) over •
+   4   | EXPORT |    6     | (c, 1, 2)

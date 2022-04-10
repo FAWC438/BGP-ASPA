@@ -9,10 +9,12 @@ object CustomerExtender : Extender<BGPRoute> {
 
     override fun extend(route: BGPRoute, sender: Node<BGPRoute>): BGPRoute {
 
-        val localPref = if (sender.protocol.attackType >= 2) customerLocalPreference else route.localPref
+        val localPref = when (sender.protocol.nodeType) {
+            2, 3 -> customerLocalPreference
+            else -> route.localPref
+        }
 
         return when {
-            // peer 或者 provider 将不能够通过 customer 关系链路进行路由？
             localPref <= peerLocalPreference -> BGPRoute.invalid()
             else -> customerRoute(asPath = route.asPath.append(sender, "c"))
         }
@@ -24,8 +26,10 @@ object PeerExtender : Extender<BGPRoute> {
 
     override fun extend(route: BGPRoute, sender: Node<BGPRoute>): BGPRoute {
 
-        val localPref =
-            if (sender.protocol.attackType == 3 || sender.protocol.attackType == 1) customerLocalPreference else route.localPref
+        val localPref = when (sender.protocol.nodeType) {
+            1, 3 -> customerLocalPreference
+            else -> route.localPref
+        }
 
         return when {
             localPref <= peerLocalPreference -> BGPRoute.invalid()
@@ -47,11 +51,9 @@ object ProviderExtender : Extender<BGPRoute> {
 //            localPref <= peerLocalPreference -> BGPRoute.invalid()
 //            else -> providerRoute(asPath = route.asPath.append(sender, "p"))
 
-        return when (sender.protocol.attackType) {
-            // 所有情况下，都需要把路由导出给客户（通过提供者通道），因此无需本地优先级限制
-            3, 1 -> BGPRoute.invalid()
-            else -> providerRoute(asPath = route.asPath.append(sender, "p"))
-        }
+        // 所有情况下，都需要把路由导出给客户（通过供应商通道）
+        return providerRoute(asPath = route.asPath.append(sender, "p"))
+
     }
 
 }

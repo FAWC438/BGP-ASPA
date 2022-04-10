@@ -48,6 +48,7 @@ class InterdomainTopologyReader(reader: Reader, private val forcedMRAI: Time? = 
                 "attack1" -> Attacker(mrai, aType = 1)
                 "attack2" -> Attacker(mrai, aType = 2)
                 "attack3" -> Attacker(mrai, aType = 3)
+                "aspa" -> ASPA(mrai)
                 "ssbgp" -> SSBGP(mrai)
                 "issbgp" -> ISSBGP(mrai)
                 "ssbgp2" -> SSBGP2(mrai)
