@@ -48,6 +48,7 @@ object ProviderExtender : Extender<BGPRoute> {
 //            else -> providerRoute(asPath = route.asPath.append(sender, "p"))
 
         return when (sender.protocol.attackType) {
+            // 所有情况下，都需要把路由导出给客户（通过提供者通道），因此无需本地优先级限制
             3, 1 -> BGPRoute.invalid()
             else -> providerRoute(asPath = route.asPath.append(sender, "p"))
         }

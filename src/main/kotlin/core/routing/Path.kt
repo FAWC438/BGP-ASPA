@@ -81,11 +81,18 @@ class Path internal constructor(
     }
 
     /**
-     * 返回路径节点关系的迭代器。
+     * 返回路径节点关系的列表泛型。
      */
-    fun relationIterator(): Iterator<String> {
-        return relations.iterator()
+    fun getRelations(): ArrayList<String> {
+        return kotlin.collections.ArrayList(relations)
     }
+
+//    /**
+//     * 返回路径节点关系的迭代器。
+//     */
+//    fun relationIterator(): Iterator<String> {
+//        return relations.iterator()
+//    }
 
     /**
      * 如果两条路径以完全相同的顺序具有完全相同的节点，则它们被认为是相等的。

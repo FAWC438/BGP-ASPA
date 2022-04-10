@@ -5,6 +5,8 @@ import core.routing.*
 import core.simulator.Time
 import core.simulator.Timer
 
+val leakingRelations = arrayListOf(Pair("p", "r"), Pair("p", "c"), Pair("r", "r"), Pair("r", "c"))
+
 abstract class BaseBGP(private val mrai: Time, routingTable: RoutingTable<BGPRoute>) : Protocol<BGPRoute> {
 
     /**
@@ -61,7 +63,6 @@ abstract class BaseBGP(private val mrai: Time, routingTable: RoutingTable<BGPRou
      * 处理节点引入的BGP路由。
      * 可能会更新路由表和选定的路由邻居。
      *
-     * TODO:ASPA防御节点需要考虑修改该方法
      *
      * @param node          导入路由的节点
      * @param neighbor      导出路由的邻居
@@ -105,16 +106,30 @@ abstract class BaseBGP(private val mrai: Time, routingTable: RoutingTable<BGPRou
      */
     private fun learn(node: Node<BGPRoute>, sender: Node<BGPRoute>, route: BGPRoute): BGPRoute {
 
-        // TODO: 在这里更改ASPA策略
-        println(route.asPath)
+        println(route.asPath)   // for debug
 
-        return if (node in route.asPath) {
+        if (node in route.asPath) {
             // 通知 implementations 检测到循环
             onLoopDetected(node, sender, route)
 
-            BGPRoute.invalid()
+            return BGPRoute.invalid()
         } else {
-            route
+
+            /**
+             * 以下为ASPA防御措施
+             *
+             * 具体为判断ASPath中是否存在前后关系异常的链路，是，则说明该链路为路由泄露链路；否则反之
+             *
+             */
+            var relationPair = Pair("", "")
+
+            for (s in route.asPath.getRelations()) {
+                relationPair = Pair(relationPair.second, s)
+                if (relationPair in leakingRelations)
+                    return BGPRoute.leakingRoute(leakingRelations.indexOf(relationPair))
+            }
+
+            return route
         }
     }
 

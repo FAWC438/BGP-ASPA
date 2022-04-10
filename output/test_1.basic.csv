@@ -4,3 +4,9 @@ Simulation;Delay Seed;Termination Time (Total);Termination Time (Avg.);Message C
 1;1649572476455;4;1.1428571428571428;7;0;Yes;3
 Simulation;Delay Seed;Termination Time (Total);Termination Time (Avg.);Message Count;Detection Count;Terminated;Disconnected Count
 1;1649575957852;2;0.6666666666666666;6;0;Yes;3
+Simulation;Delay Seed;Termination Time (Total);Termination Time (Avg.);Message Count;Detection Count;Terminated;Disconnected Count
+1;1649576914425;2;0.6666666666666666;6;0;Yes;3
+Simulation;Delay Seed;Termination Time (Total);Termination Time (Avg.);Message Count;Detection Count;Terminated;Disconnected Count
+1;1649577974246;2;0.5714285714285714;7;0;Yes;4
+Simulation;Delay Seed;Termination Time (Total);Termination Time (Avg.);Message Count;Detection Count;Terminated;Disconnected Count
+1;1649577987857;2;1.1428571428571428;7;0;Yes;3

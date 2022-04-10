@@ -31,6 +31,19 @@ sealed class BGPRoute : Route {
         fun invalid(): BGPRoute = InvalidBGPRoute
 
         /**
+         * 返回收到路由泄露的 BGP 路由。
+         */
+        fun leakingRoute(leakingType: Int): BGPRoute {
+            return when (leakingType) {
+                0 -> LeakingBGPRoutePR
+                1 -> LeakingBGPRoutePC
+                2 -> LeakingBGPRouteRR
+                3 -> LeakingBGPRouteRC
+                else -> throw Exception("Unknown leaking type")
+            }
+        }
+
+        /**
          * 返回自 BGP 路由。self BGP 路由是具有最高优先级的 BGP 路由。
          */
         fun self(): BGPRoute = SelfBGPRoute
@@ -52,6 +65,46 @@ sealed class BGPRoute : Route {
         override val asPath: Path = emptyPath()
         override fun isValid(): Boolean = false
         override fun toString(): String = "•"
+    }
+
+    /**
+     * 遭到路由泄露攻击的BGP路由实现，p - r 型
+     */
+    private object LeakingBGPRoutePR : BGPRoute() {
+        override val localPref: Int = Int.MIN_VALUE
+        override val asPath: Path = emptyPath()
+        override fun isValid(): Boolean = false
+        override fun toString(): String = "*-PR"
+    }
+
+    /**
+     * 遭到路由泄露攻击的BGP路由实现，p - c 型
+     */
+    private object LeakingBGPRoutePC : BGPRoute() {
+        override val localPref: Int = Int.MIN_VALUE
+        override val asPath: Path = emptyPath()
+        override fun isValid(): Boolean = false
+        override fun toString(): String = "*-PC"
+    }
+
+    /**
+     * 遭到路由泄露攻击的BGP路由实现，r - r 型
+     */
+    private object LeakingBGPRouteRR : BGPRoute() {
+        override val localPref: Int = Int.MIN_VALUE
+        override val asPath: Path = emptyPath()
+        override fun isValid(): Boolean = false
+        override fun toString(): String = "*-RR"
+    }
+
+    /**
+     * 遭到路由泄露攻击的BGP路由实现，r - c 型
+     */
+    private object LeakingBGPRouteRC : BGPRoute() {
+        override val localPref: Int = Int.MIN_VALUE
+        override val asPath: Path = emptyPath()
+        override fun isValid(): Boolean = false
+        override fun toString(): String = "*-RC"
     }
 
     /**
