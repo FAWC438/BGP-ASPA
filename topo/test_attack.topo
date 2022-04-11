@@ -1,12 +1,14 @@
 node = 1 | BGP | 0
-node = 2 | Attack2 | 0
+node = 2 | Attack3 | 0
 node = 3 | BGP | 0
 node = 4 | BGP | 0
 node = 5 | BGP | 0
-node = 6 | BGP | 0
+node = 6 | ASPA | 0
+node = 7 | BGP | 0
 link = 2 | 1 | R
 link = 3 | 1 | P
 link = 4 | 3 | R
 link = 2 | 3 | C
 link = 6 | 2 | C
 link = 5 | 2 | R
+link = 7 | 6 | C

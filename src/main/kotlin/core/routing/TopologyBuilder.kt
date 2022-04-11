@@ -1,5 +1,10 @@
 package core.routing
 
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.ObjectOutputStream
+
+
 /**
  * 抛出异常，表示正在添加的元素已经存在且无法重新添加。
  */
@@ -66,7 +71,33 @@ class TopologyBuilder<R : Route> {
      * 返回一个新的拓扑，其中包含调用此方法时在构建器中定义的节点和链接。
      */
     fun build(): Topology<R> {
-        return Topology(nodes)
+        // System.getProperty("user.dir")
+        val targetTopology = Topology(nodes)
+
+        /**
+         * 将链路序列化，模拟 RPKI 数据库的作用，记录链路关系
+         */
+        val serializableLinks = ArrayList<Triple<String, String, String>>()
+        for (i in targetTopology.links) {
+
+            // 该三元组内容为：(发送节点，接收节点，链路关系)
+            val temp = Triple(i.head.id.toString(), i.tail.id.toString(), i.extender.toString())
+            // println(temp)
+            serializableLinks.add(temp)
+        }
+        try {
+            val fileOut = FileOutputStream("./Serialization/topology.ser")
+            ObjectOutputStream(fileOut).apply {
+                writeObject(serializableLinks)
+                close()
+            }
+            fileOut.close()
+        } catch (i: IOException) {
+            i.printStackTrace()
+            throw IOException()
+        }
+
+        return targetTopology
     }
 
 }

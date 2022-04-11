@@ -43,7 +43,7 @@ sealed class BGPAdvertisementInitializer(
         const val DEFAULT_THRESHOLD = 1_000_000
         const val DEFAULT_MINDELAY = 1
         const val DEFAULT_MAXDELAY = 1
-        val DEFAULT_REPORT_DIRECTORY = File(System.getProperty("user.dir"))  // current working directory
+        val DEFAULT_REPORT_DIRECTORY = File(System.getProperty("user.dir"))  // 当前工作目录
 
         fun with(topologyFile: File, advertiserIDs: Set<NodeID>): BGPAdvertisementInitializer =
             UsingDefaultSet(topologyFile, advertiserIDs)

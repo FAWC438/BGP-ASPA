@@ -6,44 +6,31 @@ import core.simulator.Time
 import core.simulator.currentTime
 
 /**
- * Created on 25-07-2017.
  *
- * @author David Fialho
- *
- * 所有通知的基类。所有通知都与发出通知的 [时间] 相关联。
+ * 所有通知的基类。所有通知都与发出通知的 [time] 相关联。
  *
  * @property time 发出通知的时间
  */
 abstract class Notification(val time: Time = currentTime())
 
 /**
- * Created on 25-07-2017.
- *
- * @author David Fialho
  *
  * 模拟开始时发出的通知。
  *
- * @property seed     the initial seed used to generate the message delays
- * @property topology the topology used for the simulation
+ * @property seed     用于生成消息延迟的初始种子
+ * @property topology 用于仿真的拓扑
  */
 data class StartNotification(val seed: Long, val topology: Topology<*>) : Notification()
 
 /**
- * Created on 25-07-2017.
  *
- * @author David Fialho
+ * 模拟结束时发出的通知。无论是否达到模拟的阈值，都会发出它。
  *
- * Notification issued when a simulation ends. It is issued regardless of whether or not the
- * threshold of the simulation was reached.
- *
- * @property topology the topology used for the simulation
+ * @property topology 用于仿真的拓扑
  */
 data class EndNotification(val topology: Topology<*>) : Notification()
 
 /**
- * Created on 25-07-2017.
- *
- * @author David Fialho
  *
  * Notification issued when the threshold of the simulation is reached.
  *
@@ -52,18 +39,12 @@ data class EndNotification(val topology: Topology<*>) : Notification()
 class ThresholdReachedNotification(val threshold: Time) : Notification()
 
 /**
- * Created on 29-08-2017
- *
- * @author David Fialho
  *
  * Notification issued when a [message] is sent.
  */
 data class MessageSentNotification(val message: Message<*>) : Notification()
 
 /**
- * Created on 29-08-2017
- *
- * @author David Fialho
  *
  * Notification issued when a [message] arrives at its recipient.
  */

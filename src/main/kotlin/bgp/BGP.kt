@@ -4,6 +4,10 @@ import bgp.notifications.*
 import core.routing.*
 import core.simulator.Time
 import core.simulator.Timer
+import java.io.FileInputStream
+import java.io.IOException
+import java.io.ObjectInputStream
+
 
 val leakingRelations = arrayListOf(Pair("p", "r"), Pair("p", "c"), Pair("r", "r"), Pair("r", "c"))
 
@@ -109,33 +113,68 @@ abstract class BaseBGP(private val mrai: Time, routingTable: RoutingTable<BGPRou
      */
     private fun learn(node: Node<BGPRoute>, sender: Node<BGPRoute>, route: BGPRoute): BGPRoute {
 
-        println(route.asPath)   // for debug
+        // println(route.asPath)   // for debug
 
-        if (node in route.asPath) {
+        return if (node in route.asPath) {
             // 通知 implementations 检测到循环
             onLoopDetected(node, sender, route)
 
-            return BGPRoute.invalid()
-        } else {
+            BGPRoute.invalid()
+        } else if (node.protocol.nodeType == 4) processASPA(node, route) else route
+    }
 
-            /**
-             * 以下为ASPA防御措施
-             *
-             * 具体为判断ASPath中是否存在前后关系异常的链路，是，则说明该链路为路由泄露链路；否则反之，并进行正常的路由学习
-             *
-             */
-            if (node.protocol.nodeType == 4) {
-                var relationPair = Pair("", "")
+    /**
+     * 以下为ASPA防御措施
+     *
+     * 具体为判断ASPath中是否存在前后关系异常的链路，是，则说明该链路为路由泄露链路；否则反之，并进行正常的路由学习
+     *
+     * @param selfNode  节点本身，用于扩展ASPath从而得到Path的节点间关系
+     * @param route     节点导入的路由（应用扩展器后得到的路由）
+     * @return 如果检查到路由泄露，返回泄露警告路由；反正返回节点导入的原路由
+     */
+    private fun processASPA(selfNode: Node<*>, route: BGPRoute): BGPRoute {
+        var relationPair = Pair("", "")
+        // var nodePair = Pair("", "")
+        var preNode = ""
+        val links: ArrayList<*>
+        val relations = ArrayList<String>()
+        val asPath = route.asPath.append(selfNode)
 
-                for (s in route.asPath.getRelations()) {
-                    relationPair = Pair(relationPair.second, s)
-                    if (relationPair in leakingRelations)
-                        return BGPRoute.leakingRoute(leakingRelations.indexOf(relationPair))
-                }
+        /**
+         * 将链路反序列化，模拟从 RPKI 数据库获得签名的行为，由此实现路由源验证
+         */
+        try {
+            val fileIn = FileInputStream("./Serialization/topology.ser")
+            ObjectInputStream(fileIn).apply {
+                links = readObject() as ArrayList<*>
+                close()
+            }
+            fileIn.close()
+        } catch (i: IOException) {
+            i.printStackTrace()
+            throw IOException()
+        }
+
+        for (pathNode in asPath) {
+            // link: (发送节点，接收节点，链路关系)
+            for (link in links) {
+                // 注意！如果ASPath有误（被篡改等），或拓扑链路有误（RPKI不是最新的），将不会触发break，返回非法路由
+                if (link is Triple<*, *, *> && preNode == link.first.toString() && pathNode.id.toString() == link.second.toString()) {
+                    relations.add(link.third.toString())
+                    break
+                } else if (link == links.lastOrNull())
+                    return BGPRoute.invalid()
             }
 
-            return route
+            preNode = pathNode.id.toString()
         }
+
+        for (r in relations) {
+            relationPair = Pair(relationPair.second, r)
+            if (relationPair in leakingRelations)
+                return BGPRoute.leakingRoute(leakingRelations.indexOf(relationPair), route.asPath)
+        }
+        return route
     }
 
     /**

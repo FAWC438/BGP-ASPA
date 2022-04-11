@@ -20,6 +20,9 @@ object CustomerExtender : Extender<BGPRoute> {
         }
     }
 
+    override fun toString(): String {
+        return "c"
+    }
 }
 
 object PeerExtender : Extender<BGPRoute> {
@@ -37,6 +40,9 @@ object PeerExtender : Extender<BGPRoute> {
         }
     }
 
+    override fun toString(): String {
+        return "r"
+    }
 }
 
 object ProviderExtender : Extender<BGPRoute> {
@@ -54,6 +60,10 @@ object ProviderExtender : Extender<BGPRoute> {
         // 所有情况下，都需要把路由导出给客户（通过供应商通道）
         return providerRoute(asPath = route.asPath.append(sender, "p"))
 
+    }
+
+    override fun toString(): String {
+        return "p"
     }
 
 }

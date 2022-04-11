@@ -3,20 +3,15 @@ package utils
 import bgp.notifications.*
 import core.simulator.notifications.Notification
 
-/**
- * Created on 26-07-2017
- *
- * @author David Fialho
- */
-class BGPNotificationCollector(val withOutput: Boolean): NotificationCollector(),
-        LearnListener, DetectListener, SelectListener, ExportListener {
+class BGPNotificationCollector(private val withOutput: Boolean) : NotificationCollector(),
+    LearnListener, DetectListener, SelectListener, ExportListener {
 
     //region Lists containing all notifications
 
-    val learnNotifications = ArrayList<LearnNotification>()
-    val detectNotifications = ArrayList<DetectNotification>()
-    val selectNotifications = ArrayList<SelectNotification>()
-    val exportNotifications = ArrayList<ExportNotification>()
+    private val learnNotifications = ArrayList<LearnNotification>()
+    private val detectNotifications = ArrayList<DetectNotification>()
+    private val selectNotifications = ArrayList<SelectNotification>()
+    private val exportNotifications = ArrayList<ExportNotification>()
 
     //endregion
 
@@ -62,6 +57,7 @@ class BGPNotificationCollector(val withOutput: Boolean): NotificationCollector()
         exportNotifications.add(notification)
         print(notification)
     }
+
     private fun print(notification: Notification) {
         if (withOutput) {
             println("time=${notification.time}: $notification")

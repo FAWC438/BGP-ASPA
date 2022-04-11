@@ -4,6 +4,11 @@ import core.routing.Path
 import core.routing.Route
 import core.routing.emptyPath
 
+const val PRLocalPreference: Int = Int.MIN_VALUE + 1
+const val PCLocalPreference: Int = Int.MIN_VALUE + 2
+const val RRLocalPreference: Int = Int.MIN_VALUE + 3
+const val RCLocalPreference: Int = Int.MIN_VALUE + 4
+
 /**
  *
  * 一条 BGP 路由由两个属性组成：LOCAL-PREF 和 AS-PATH。
@@ -33,12 +38,12 @@ sealed class BGPRoute : Route {
         /**
          * 返回收到路由泄露的 BGP 路由。
          */
-        fun leakingRoute(leakingType: Int): BGPRoute {
+        fun leakingRoute(leakingType: Int, ASPath: Path): BGPRoute {
             return when (leakingType) {
-                0 -> LeakingBGPRoutePR
-                1 -> LeakingBGPRoutePC
-                2 -> LeakingBGPRouteRR
-                3 -> LeakingBGPRouteRC
+                0 -> LeakingBGPRoutePR(PRLocalPreference, ASPath)
+                1 -> LeakingBGPRoutePC(PCLocalPreference, ASPath)
+                2 -> LeakingBGPRouteRR(RRLocalPreference, ASPath)
+                3 -> LeakingBGPRouteRC(RCLocalPreference, ASPath)
                 else -> throw Exception("Unknown leaking type")
             }
         }
@@ -70,41 +75,33 @@ sealed class BGPRoute : Route {
     /**
      * 遭到路由泄露攻击的BGP路由实现，p - r 型
      */
-    private object LeakingBGPRoutePR : BGPRoute() {
-        override val localPref: Int = Int.MIN_VALUE
-        override val asPath: Path = emptyPath()
+    private data class LeakingBGPRoutePR(override val localPref: Int, override val asPath: Path) : BGPRoute() {
         override fun isValid(): Boolean = false
-        override fun toString(): String = "*-PR"
+        override fun toString(): String = "*-pr"
     }
 
     /**
      * 遭到路由泄露攻击的BGP路由实现，p - c 型
      */
-    private object LeakingBGPRoutePC : BGPRoute() {
-        override val localPref: Int = Int.MIN_VALUE
-        override val asPath: Path = emptyPath()
+    private data class LeakingBGPRoutePC(override val localPref: Int, override val asPath: Path) : BGPRoute() {
         override fun isValid(): Boolean = false
-        override fun toString(): String = "*-PC"
+        override fun toString(): String = "*-pc"
     }
 
     /**
      * 遭到路由泄露攻击的BGP路由实现，r - r 型
      */
-    private object LeakingBGPRouteRR : BGPRoute() {
-        override val localPref: Int = Int.MIN_VALUE
-        override val asPath: Path = emptyPath()
+    private data class LeakingBGPRouteRR(override val localPref: Int, override val asPath: Path) : BGPRoute() {
         override fun isValid(): Boolean = false
-        override fun toString(): String = "*-RR"
+        override fun toString(): String = "*-rr"
     }
 
     /**
      * 遭到路由泄露攻击的BGP路由实现，r - c 型
      */
-    private object LeakingBGPRouteRC : BGPRoute() {
-        override val localPref: Int = Int.MIN_VALUE
-        override val asPath: Path = emptyPath()
+    private data class LeakingBGPRouteRC(override val localPref: Int, override val asPath: Path) : BGPRoute() {
         override fun isValid(): Boolean = false
-        override fun toString(): String = "*-RC"
+        override fun toString(): String = "*-rc"
     }
 
     /**

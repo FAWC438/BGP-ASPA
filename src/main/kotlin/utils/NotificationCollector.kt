@@ -3,20 +3,16 @@ package utils
 import core.simulator.notifications.*
 
 /**
- * Created on 26-07-2017
- *
- * @author David Fialho
- *
- * The NotificationCollector collects all notifications send by the notifier.
+ * NotificationCollector 收集通知程序发送的所有通知。
  */
-open class NotificationCollector: StartListener, EndListener, ThresholdReachedListener,
-        MessageSentListener, MessageReceivedListener {
+open class NotificationCollector : StartListener, EndListener, ThresholdReachedListener,
+    MessageSentListener, MessageReceivedListener {
 
-    val startNotifications = ArrayList<StartNotification>()
-    val endNotifications = ArrayList<EndNotification>()
-    val thresholdReachedNotifications = ArrayList<ThresholdReachedNotification>()
-    val messageSentNotifications = ArrayList<MessageSentNotification>()
-    val messageReceivedNotifications = ArrayList<MessageReceivedNotification>()
+    private val startNotifications = ArrayList<StartNotification>()
+    private val endNotifications = ArrayList<EndNotification>()
+    private val thresholdReachedNotifications = ArrayList<ThresholdReachedNotification>()
+    private val messageSentNotifications = ArrayList<MessageSentNotification>()
+    private val messageReceivedNotifications = ArrayList<MessageReceivedNotification>()
 
     open fun register() {
         Notifier.addStartListener(this)

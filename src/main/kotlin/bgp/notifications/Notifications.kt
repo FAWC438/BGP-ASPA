@@ -10,9 +10,6 @@ import core.simulator.notifications.Notification
  * 导出路由不同于发送消息。正在导出的路由表明 [node] 有一个新的 [route] 可以发送给它的邻居。
  * 这可能导致发送零个或多个消息：在一次导出期间，节点向每个相邻节点发送一条消息。
  *
- * Created on 26-07-2017
- *
- * @author David Fialho
  */
 data class ExportNotification(
         val node: Node<BGPRoute>,
@@ -22,18 +19,12 @@ data class ExportNotification(
 /**
  * 当 [node] 从 [neighbor] 学习 [route] 时发出通知。
  *
- * The route a node receives corresponds exactly to the route selected at the sender. However, in
- * a real network that is not the case. In a real network the route learned at a node from a
- * neighbor is given by the export policies of the sender and the import policies of the receiver.
- * The simulator uses an extending function to model that transformation, @see
- * [core.routing.Extender]. Thus, the learned [route] corresponds to the result of applying the
- * extender associated with the link from [neighbor] to [node] to route received at [node]. One
- * exception to this, is when the resulting route already include [node] in its path. In that
- * case, the learned route is the invalid route.
+ * 节点接收到的路由与发送方选择的路由完全对应。但是，在实际网络中并非如此。
+ * 在真实网络中，节点从邻居那里学到的路由由发送方的导出策略和接收方的导入策略给出。
+ * 模拟器使用扩展函数来模拟该转换，@see [core.routing.Extender]。
+ * 因此，学习到的 [route] 对应于将与从 [neighbor] 到 [node] 的链路关联的扩展器应用于在 [node] 处接收到的路由的结果。
+ * 一个例外是，当生成的路由已经在其路径中包含 [node] 时。在这种情况下，学习到的路由是无效路由。
  *
- * Created on 26-07-2017
- *
- * @author David Fialho
  */
 data class LearnNotification(
         val node: Node<BGPRoute>,
@@ -51,9 +42,6 @@ data class LearnNotification(
  * @property selectedRoute the route selected by [node] as a result o learning the [learnedRoute]
  * from [neighbor]
  *
- * Created on 26-07-2017
- *
- * @author David Fialho
  */
 data class DetectNotification(
         val node: Node<BGPRoute>,

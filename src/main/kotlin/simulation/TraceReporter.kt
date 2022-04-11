@@ -11,9 +11,6 @@ import java.io.File
 import java.io.FileWriter
 
 /**
- * Created on 15-11-2017
- *
- * @author David Fialho
  *
  * TODO @doc
  * TODO @optimization - try different methods of writing that may speedup the simulation process
@@ -103,7 +100,7 @@ class TraceReporter(outputFile: File) : DataCollector, StartListener,
         simulationWriter = BufferedWriter(FileWriter(simulationOutputFile))
 
         // 查找所有节点 ID 以确定哪个节点的 ID 号最长
-        val maxIDSize = notification.topology.nodes.asSequence().map { it.id }.maxOrNull() ?: 0
+        // val maxIDSize = notification.topology.nodes.asSequence().map { it.id }.maxOrNull() ?: 0
 
         // 节点列大小对应于单词“Node”和最长节点 ID 之间的最长
         // warning: 此处有重大bug

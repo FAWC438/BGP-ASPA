@@ -1,6 +1,6 @@
 package io
 
-import bgp.BGPRoute
+import bgp.*
 import bgp.policies.interdomain.*
 import core.routing.Extender
 
@@ -127,5 +127,9 @@ fun Int.toInterdomainLabel(): String = when (this) {
     providerLocalPreference -> "p"
     BGPRoute.invalid().localPref -> BGPRoute.invalid().toString()
     BGPRoute.self().localPref -> BGPRoute.self().toString()
+    PRLocalPreference -> "*-pr"
+    PCLocalPreference -> "*-pc"
+    RRLocalPreference -> "*-rr"
+    RCLocalPreference -> "*-rc"
     else -> this.toString()
 }

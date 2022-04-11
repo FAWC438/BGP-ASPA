@@ -9,24 +9,21 @@ import java.io.File
 import java.io.IOException
 
 /**
- * Created on 01-10-2017.
  *
- * @author David Fialho
- *
- * The node data collector collects data relative to each individual node in the topology.
+ * 节点数据收集器收集与拓扑中每个单独节点相关的数据。
  */
 class NodeDataCollector(private val reporter: NodeDataReporter) :
-        DataCollector, StartListener, EndListener, ExportListener {
+    DataCollector, StartListener, EndListener, ExportListener {
 
     /**
-     * Creates a Basic Reporter that will output results to the specified output file.
+     * 创建一个将结果输出到指定输出文件的 Basic Reporter。
      */
     constructor(outputFile: File) : this(NodeDataReporter(outputFile))
 
     private val data = NodeDataSet()
 
     /**
-     * Adds the collector as a listener for notifications the collector needs to listen to collect data.
+     * 将收集器添加为收集器需要侦听以收集数据的通知的侦听器。
      */
     override fun register() {
         Notifier.addStartListener(this)
@@ -35,7 +32,7 @@ class NodeDataCollector(private val reporter: NodeDataReporter) :
     }
 
     /**
-     * Removes the collector from all notifiers
+     * 从所有通知器中删除收集器
      */
     override fun unregister() {
         Notifier.removeStartListener(this)
@@ -44,9 +41,9 @@ class NodeDataCollector(private val reporter: NodeDataReporter) :
     }
 
     /**
-     * Reports the currently collected data.
+     * 报告当前收集的数据。
      *
-     * @throws IOException If an I/O error occurs
+     * @throws IOException 如果发生 IO 错误
      */
     @Throws(IOException::class)
     override fun report() {
@@ -54,34 +51,34 @@ class NodeDataCollector(private val reporter: NodeDataReporter) :
     }
 
     /**
-     * Clears all collected data.
+     * 清除所有收集的数据。
      */
     override fun clear() {
         data.clear()
     }
 
     /**
-     * Invoked to notify the listener of a new start notification.
+     * 调用以通知侦听器新的开始通知。
      */
     override fun onStart(notification: StartNotification) {
-        // Ensure that all nodes start with a termination time of 0. This also ensures
-        // that all nodes are included in the terminationTimes map Why is this necessary?
-        // It may occur the some nodes never export a route. If that is the case, then
-        // these nodes would not be included in the terminationTimes map.
+        // 确保所有节点都以终止时间为 0 开始。
+        // 这也确保所有节点都包含在终止时间映射中。
+        // 为什么需要这样做？
+        // 可能会出现某些节点从不导出路由的情况。如果是这种情况，那么这些节点将不会包含在终止时间映射中。
         for (node in notification.topology.nodes)
             data.terminationTimes[node.id] = 0
     }
 
     /**
-     * Invoked to notify the listener of a new export notification.
+     * 调用以通知侦听器新的导出通知。
      */
     override fun onExport(notification: ExportNotification) {
-        // Update termination time of the node that exported a new route
+        // 更新导出新路由的节点的终止时间
         data.terminationTimes[notification.node.id] = notification.time
     }
 
     /**
-     * Invoked to notify the listener of a new end notification.
+     * 调用以通知侦听器新的结束通知。
      */
     override fun onEnd(notification: EndNotification) {
         for (node in notification.topology.nodes)

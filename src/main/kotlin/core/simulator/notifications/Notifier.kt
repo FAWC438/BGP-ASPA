@@ -1,24 +1,20 @@
 package core.simulator.notifications
 
 /**
- * Created on 25-07-2017.
  *
- * @author David Fialho
+ * [Notifier] 负责让每个通知到达每个侦听该类型通知的侦听器。
+ * [Notifier] 仅支持此包中包含的通知。监听者需要注册到 [Notifier] 才能接收通知。
  *
- * The [Notifier] is responsible for having each notification reach each listener listening
- * for that type of notification. The [Notifier] supports only the notifications included on
- * this package. Listeners need to registered with the [Notifier] to receive notifications.
+ * 它为每种类型的通知提供了三种方法：
  *
- * It provides three methods for each type of notification:
- *
- *   - add:    Called by a listener receive a specific type of notifications
- *   - remove: Called by a listener to stop receiving a specific type of notifications
- *   - notify: Called by the simulator during the simulation to send a notification to listeners
+ *   - add:    由侦听器调用接收特定类型的通知
+ *   - remove: 由侦听器调用以停止接收特定类型的通知
+ *   - notify: 在模拟过程中由模拟器调用以向侦听器发送通知
  *
  */
 object Notifier {
 
-    //region Lists containing the registered listeners
+    //region 包含已注册侦听器的列表
 
     private val startListeners = mutableListOf<StartListener>()
     private val endListeners = mutableListOf<EndListener>()
@@ -28,26 +24,24 @@ object Notifier {
 
     //endregion
 
-    //region Start notification
+    //region 开始通知
 
     /**
-     * Tell the notifier that [listener] wants to receive start notifications. Afterwards, the
-     * [listener] will receive all start notifications.
+     * 告诉通知者 [listener] 想要接收开始通知。之后，[listener] 将收到所有开始通知。
      */
     fun addStartListener(listener: StartListener) {
         startListeners.add(listener)
     }
 
     /**
-     * Tell the notifier that [listener] no longer wants to receive start notifications.
-     * Afterwards, the [listener] will no longer receive start notifications.
+     * 告诉通知者 [listener] 不再想接收开始通知。之后，[listener] 将不再收到开始通知。
      */
     fun removeStartListener(listener: StartListener) {
         startListeners.remove(listener)
     }
 
     /**
-     * Sends [notification] to all listeners listening to start notifications.
+     * 向所有侦听开始通知的侦听器发送 [notification]。
      */
     fun notify(notification: StartNotification) {
         startListeners.forEach { it.onStart(notification) }
@@ -55,26 +49,24 @@ object Notifier {
 
     //endregion
 
-    //region End notification
+    //region 结束通知
 
     /**
-     * Tell the notifier that [listener] wants to receive end notifications. Afterwards, the
-     * [listener] will receive all end notifications.
+     * 告诉通知者 [listener] 想要接收结束通知。之后，[listener] 将收到所有结束通知。
      */
     fun addEndListener(listener: EndListener) {
         endListeners.add(listener)
     }
 
     /**
-     * Tell the notifier that [listener] no longer wants to receive end notifications.
-     * Afterwards, the [listener] will no longer receive end notifications.
+     * 告诉通知者 [listener] 不再想接收结束通知。之后，[listener] 将不再收到结束通知。
      */
     fun removeEndListener(listener: EndListener) {
         endListeners.remove(listener)
     }
 
     /**
-     * Sends [notification] to all listeners listening to end notifications.
+     * 向所有收听结束通知的侦听器发送 [notification]。
      */
     fun notify(notification: EndNotification) {
         endListeners.forEach { it.onEnd(notification) }
@@ -82,26 +74,24 @@ object Notifier {
 
     //endregion
 
-    //region Threshold reached notification
+    //region 达到阈值通知
 
     /**
-     * Tell the notifier that [listener] wants to receive threshold reached notifications.
-     * Afterwards, the [listener] will receive all threshold reached notifications.
+     * 告诉通知者 [listener] 想要接收达到阈值的通知。之后，[listener] 将收到所有达到阈值的通知。
      */
     fun addThresholdReachedListener(listener: ThresholdReachedListener) {
         thresholdReachedListeners.add(listener)
     }
 
     /**
-     * Tell the notifier that [listener] no longer wants to receive threshold reached notifications.
-     * Afterwards, the [listener] will no longer receive threshold reached notifications.
+     * 告诉通知者 [listener] 不再希望接收已达到阈值的通知。之后，[listener] 将不再收到达到阈值的通知。
      */
     fun removeThresholdReachedListener(listener: ThresholdReachedListener) {
         thresholdReachedListeners.remove(listener)
     }
 
     /**
-     * Sends [notification] to all listeners listening to threshold reached notifications.
+     * 向所有侦听阈值已达到通知的侦听器发送 [notification]。
      */
     fun notify(notification: ThresholdReachedNotification) {
         thresholdReachedListeners.forEach { it.onThresholdReached(notification) }
@@ -109,26 +99,24 @@ object Notifier {
 
     //endregion
 
-    //region Message sent notification
+    //region 消息发送通知
 
     /**
-     * Tell the notifier that [listener] wants to receive message sent notifications. Afterwards,
-     * the [listener] will receive all message sent notifications.
+     * 告诉通知者 [listener] 想要接收消息发送的通知。之后，[listener] 将收到所有消息发送的通知。
      */
     fun addMessageSentListener(listener: MessageSentListener) {
         messageSentListeners.add(listener)
     }
 
     /**
-     * Tell the notifier that [listener] no longer wants to receive message sent notifications.
-     * Afterwards, the [listener] will no longer receive message sent notifications.
+     * 告诉通知者 [listener] 不再想接收消息发送的通知。之后，[listener] 将不再接收消息发送通知。
      */
     fun removeMessageSentListener(listener: MessageSentListener) {
         messageSentListeners.remove(listener)
     }
 
     /**
-     * Sends [notification] to all listeners listening to message sent notifications.
+     * 向所有收听消息发送通知的侦听器发送 [通知]。
      */
     fun notify(notification: MessageSentNotification) {
         messageSentListeners.forEach { it.onMessageSent(notification) }
@@ -136,30 +124,30 @@ object Notifier {
 
     //endregion
 
-    //region Message received notification
+    //region 消息收到通知
 
     /**
-     * Registers a new message received listener.
+     * 注册一个新的消息接收侦听器。
      *
-     * @param listener message received listener to register.
+     * @param listener 消息接收到的监听器注册。
      */
     fun addMessageReceivedListener(listener: MessageReceivedListener) {
         messageReceivedListeners.add(listener)
     }
 
     /**
-     * Unregisters a new message received listener.
+     * 取消注册接收到的新消息侦听器。
      *
-     * @param listener message received listener to unregister.
+     * @param listener 消息接收到的侦听器取消注册。
      */
     fun removeMessageReceivedListener(listener: MessageReceivedListener) {
         messageReceivedListeners.remove(listener)
     }
 
     /**
-     * Sends a message received notification to each message received listener.
+     * 向每个收到消息的侦听器发送收到消息的通知。
      *
-     * @param notification the message received notification to send to each registered listener.
+     * @param notification 消息收到通知发送给每个注册的侦听器。
      */
     fun notify(notification: MessageReceivedNotification) {
         messageReceivedListeners.forEach { it.onMessageReceived(notification) }

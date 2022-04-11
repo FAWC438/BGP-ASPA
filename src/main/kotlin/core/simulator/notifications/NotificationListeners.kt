@@ -1,92 +1,72 @@
 package core.simulator.notifications
 
 /**
- * Created on 25-07-2017.
  *
- * @author David Fialho
+ * 通知侦听器的标记接口。
  *
- * Tag interface for notification listeners.
+ * 在模拟期间会发出多个通知。这些通知提供有关正在模拟的路由协议的状态和进度的有价值的信息。
+ * 因此，收听这些通知可能有助于收集相关数据。
  *
- * During a simulation multiple notifications are issued. These notifications provide valuable
- * information about the state and progress of the routing protocol(s) being simulated. Thus,
- * listening these notifications may be useful to collect relevant data.
- *
- * A [NotificationListener] listens for a specific notification. To listen for multiple
- * notifications, the subclass should implement multiple types of listeners.
+ * [NotificationListener] 侦听特定通知。要监听多个通知，子类应该实现多种类型的监听器。
  */
 interface NotificationListener
 
 /**
- * Created on 25-07-2017.
  *
- * @author David Fialho
- *
- * A [StartListener] listens for [StartNotification]s.
+ * [StartListener] 侦听 [StartNotification]。
  */
 interface StartListener : NotificationListener {
 
     /**
-     * Invoked when a start notification is issued.
+     * 在发出开始通知时调用。
      */
     fun onStart(notification: StartNotification)
 }
 
 /**
- * Created on 25-07-2017.
  *
- * @author David Fialho
- *
- * An [EndListener] listens for [EndNotification]s.
+ * [EndListener] 侦听 [EndNotification]。
  */
 interface EndListener {
 
     /**
-     * Invoked when an end notification is issued.
+     * 在发出结束通知时调用。
      */
     fun onEnd(notification: EndNotification)
 }
 
 /**
- * Created on 25-07-2017.
  *
- * @author David Fialho
- *
- * A [ThresholdReachedListener] listens for [ThresholdReachedNotification]s.
+ * [ThresholdReachedListener] 侦听 [ThresholdReachedNotification]。
  */
 interface ThresholdReachedListener {
 
     /**
-     * Invoked when a threshold reached notification is issued.
+     * 在发出达到阈值的通知时调用。
      */
     fun onThresholdReached(notification: ThresholdReachedNotification)
 }
 
 /**
- * Created on 29-08-2017
  *
- * @author David Fialho
- *
- * A [MessageSentListener] listens for [MessageSentNotification]s.
+ * [MessageSentListener] 侦听 [MessageSentNotification]。
  */
 interface MessageSentListener : NotificationListener {
 
     /**
-     * Invoked when a message sent notification is issued.
+     * 在发出消息已发送通知时调用。
      */
     fun onMessageSent(notification: MessageSentNotification)
 }
 
 /**
- * Created on 29-08-2017
  *
- * @author David Fialho
- *
- * A [MessageReceivedListener] listens for [MessageReceivedNotification]s.
+ * [MessageReceivedListener] 侦听 [MessageReceivedNotification]。
  */
 interface MessageReceivedListener : NotificationListener {
 
     /**
-     * Invoked when a message received notification is issued.
+     * 在发出消息接收通知时调用。
      */
     fun onMessageReceived(notification: MessageReceivedNotification)
 }

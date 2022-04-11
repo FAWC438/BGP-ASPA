@@ -1,61 +1,49 @@
 package bgp.notifications
 
 /**
- * An [ExportListener] listens for [ExportNotification]s.
+ * [ExportListener] 侦听 [ExportNotification]。
  *
- * Created on 25-07-2017.
- *
- * @author David Fialho
  */
 interface ExportListener {
 
     /**
-     * Invoked when an export notification is issued.
+     * 发出出口通知时调用。
      */
     fun onExport(notification: ExportNotification)
 }
 
 /**
- * An [LearnListener] listens for [LearnNotification]s.
+ * [LearnListener] 监听 [LearnNotification]。
  *
- * Created on 25-07-2017.
- *
- * @author David Fialho
  */
 interface LearnListener {
 
     /**
-     * Invoked when a learn notification is issued.
+     * 在发出学习通知时调用。
      */
     fun onLearn(notification: LearnNotification)
 }
 
 /**
- * An [DetectListener] listens for [DetectNotification]s.
+ * [DetectListener] 侦听 [DetectNotification]。
  *
- * Created on 25-07-2017.
- *
- * @author David Fialho
  */
 interface DetectListener {
 
     /**
-     * Invoked when a detect notification is issued.
+     * 发出检测通知时调用。
      */
     fun onDetect(notification: DetectNotification)
 }
 
 /**
- * An [SelectListener] listens for [SelectNotification]s.
+ * [SelectListener] 监听 [SelectNotification]。
  *
- * Created on 25-07-2017.
- *
- * @author David Fialho
  */
 interface SelectListener {
 
     /**
-     * Invoked when a select notification is issued.
+     * 在发出选择通知时调用。
      */
     fun onSelect(notification: SelectNotification)
 }

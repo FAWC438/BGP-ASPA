@@ -6,26 +6,22 @@ import core.routing.Path
 import core.routing.Route
 
 /**
- * Created on 16-11-2017
  *
- * @author David Fialho
- *
- * This files contains extension methods to prettify some classes that are output to the user.
+ * 该文件包含扩展方法来美化一些输出给用户的类。
  */
 
 /**
- * Returns the node's ID as a string.
+ * 以字符串形式返回节点的 ID。
  */
 fun <R: Route> Node<R>.pretty(): String = id.toString()
 
 /**
- * Returns the IDs of the nodes in the path separated by a comma.
+ * 返回以逗号分隔的路径中节点的 ID。
  */
 fun Path.pretty(): String = joinToString(transform = {it.pretty()})
 
 /**
- * Converts the local preference of a BGP route to the corresponding interdomain label and the AS path to a path.
- * These are put inside parenthesis and separated by a comma.
+ * 将 BGP 路由的本地优先级转换为相应的域间标签，将 AS 路径转换为路径。这些放在括号内并用逗号分隔。
  */
 fun BGPRoute.pretty(): String {
 

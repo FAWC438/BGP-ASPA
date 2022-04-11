@@ -23,7 +23,7 @@ class Topology<R : Route>(private val idToNode: Map<NodeID, Node<R>>) {
     /**
      * 拓扑中的链路数。
      */
-    val linkCount: Int
+    private val linkCount: Int
         get() = idToNode.map { it.value.inNeighbors }.count()
 
     /**
