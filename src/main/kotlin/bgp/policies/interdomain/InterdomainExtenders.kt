@@ -16,7 +16,7 @@ object CustomerExtender : Extender<BGPRoute> {
 
         return when {
             localPref <= peerLocalPreference -> BGPRoute.invalid()
-            else -> customerRoute(asPath = route.asPath.append(sender, "c"))
+            else -> customerRoute(asPath = route.asPath.append(sender))
         }
     }
 
@@ -36,7 +36,7 @@ object PeerExtender : Extender<BGPRoute> {
 
         return when {
             localPref <= peerLocalPreference -> BGPRoute.invalid()
-            else -> peerRoute(asPath = route.asPath.append(sender, "r"))
+            else -> peerRoute(asPath = route.asPath.append(sender))
         }
     }
 
@@ -58,7 +58,7 @@ object ProviderExtender : Extender<BGPRoute> {
 //            else -> providerRoute(asPath = route.asPath.append(sender, "p"))
 
         // 所有情况下，都需要把路由导出给客户（通过供应商通道）
-        return providerRoute(asPath = route.asPath.append(sender, "p"))
+        return providerRoute(asPath = route.asPath.append(sender))
 
     }
 

@@ -130,7 +130,7 @@ abstract class BaseBGP(private val mrai: Time, routingTable: RoutingTable<BGPRou
      *
      * @param selfNode  节点本身，用于扩展ASPath从而得到Path的节点间关系
      * @param route     节点导入的路由（应用扩展器后得到的路由）
-     * @return 如果检查到路由泄露，返回泄露警告路由；反正返回节点导入的原路由
+     * @return 如果检查到路由泄露，返回泄露警告路由；反之返回节点导入的原路由
      */
     private fun processASPA(selfNode: Node<*>, route: BGPRoute): BGPRoute {
         var relationPair = Pair("", "")
@@ -162,17 +162,17 @@ abstract class BaseBGP(private val mrai: Time, routingTable: RoutingTable<BGPRou
                 if (link is Triple<*, *, *> && preNode == link.first.toString() && pathNode.id.toString() == link.second.toString()) {
                     relations.add(link.third.toString())
                     break
-                } else if (link == links.lastOrNull())
+                } else if (link == links.lastOrNull() && pathNode == asPath.lastOrNull())
                     return BGPRoute.invalid()
             }
-
             preNode = pathNode.id.toString()
         }
-
+        // println(relations)
         for (r in relations) {
             relationPair = Pair(relationPair.second, r)
-            if (relationPair in leakingRelations)
+            if (relationPair in leakingRelations) {
                 return BGPRoute.leakingRoute(leakingRelations.indexOf(relationPair), route.asPath)
+            }
         }
         return route
     }
