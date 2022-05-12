@@ -1,22 +1,30 @@
 Simulation;Delay Seed;Termination Time (Total);Termination Time (Avg.);Message Count;Detection Count;Terminated;Disconnected Count
-1;1649769330679;2;1.1428571428571428;6;0;Yes;3
+1;1649851016390;4;1.7142857142857142;7;0;Yes;3
 Simulation;Delay Seed;Termination Time (Total);Termination Time (Avg.);Message Count;Detection Count;Terminated;Disconnected Count
-1;1649769466207;2;1.1428571428571428;6;0;Yes;3
+1;1651809153126;4;1.7142857142857142;7;0;Yes;3
 Simulation;Delay Seed;Termination Time (Total);Termination Time (Avg.);Message Count;Detection Count;Terminated;Disconnected Count
-1;1649769718211;2;1.1428571428571428;6;0;Yes;3
+1;1652078241963;4;1.7142857142857142;7;0;Yes;3
 Simulation;Delay Seed;Termination Time (Total);Termination Time (Avg.);Message Count;Detection Count;Terminated;Disconnected Count
-1;1649769757486;2;1.1428571428571428;6;0;Yes;3
+1;1652078289832;4;1.7142857142857142;7;0;Yes;3
 Simulation;Delay Seed;Termination Time (Total);Termination Time (Avg.);Message Count;Detection Count;Terminated;Disconnected Count
-1;1649769784090;2;1.1428571428571428;6;0;Yes;3
+1;1652078310858;4;1.7142857142857142;7;0;Yes;3
 Simulation;Delay Seed;Termination Time (Total);Termination Time (Avg.);Message Count;Detection Count;Terminated;Disconnected Count
-1;1649769807298;2;1.1428571428571428;6;0;Yes;3
+1;1652078331910;4;1.7142857142857142;7;0;Yes;3
 Simulation;Delay Seed;Termination Time (Total);Termination Time (Avg.);Message Count;Detection Count;Terminated;Disconnected Count
-1;1649769826283;4;1.7142857142857142;7;0;Yes;3
+1;1652078345068;4;1.7142857142857142;7;0;Yes;3
 Simulation;Delay Seed;Termination Time (Total);Termination Time (Avg.);Message Count;Detection Count;Terminated;Disconnected Count
-1;1649769883690;4;1.7142857142857142;7;0;Yes;3
+1;1652078362728;4;1.7142857142857142;7;0;Yes;3
 Simulation;Delay Seed;Termination Time (Total);Termination Time (Avg.);Message Count;Detection Count;Terminated;Disconnected Count
-1;1649769899718;4;1.7142857142857142;7;0;Yes;3
+1;1652078499291;4;1.7142857142857142;7;0;Yes;3
 Simulation;Delay Seed;Termination Time (Total);Termination Time (Avg.);Message Count;Detection Count;Terminated;Disconnected Count
-1;1649769921996;4;1.7142857142857142;7;0;Yes;3
+1;1652078532894;4;1.7142857142857142;7;0;Yes;3
 Simulation;Delay Seed;Termination Time (Total);Termination Time (Avg.);Message Count;Detection Count;Terminated;Disconnected Count
-1;1649770020940;4;1.7142857142857142;7;0;Yes;3
+1;1652078701153;4;1.7142857142857142;7;0;Yes;3
+Simulation;Delay Seed;Termination Time (Total);Termination Time (Avg.);Message Count;Detection Count;Terminated;Disconnected Count
+1;1652078970692;4;1.7142857142857142;7;0;Yes;3
+Simulation;Delay Seed;Termination Time (Total);Termination Time (Avg.);Message Count;Detection Count;Terminated;Disconnected Count
+1;1652079038377;4;1.7142857142857142;7;0;Yes;3
+Simulation;Delay Seed;Termination Time (Total);Termination Time (Avg.);Message Count;Detection Count;Terminated;Disconnected Count
+1;1652079077373;4;1.7142857142857142;7;0;Yes;3
+Simulation;Delay Seed;Termination Time (Total);Termination Time (Avg.);Message Count;Detection Count;Terminated;Disconnected Count
+1;1652079752199;4;1.7142857142857142;7;0;Yes;3

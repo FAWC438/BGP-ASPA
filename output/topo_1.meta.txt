@@ -1,0 +1,8 @@
+Version = 1.0-SNAPSHOT
+Topology file = topo.topo
+Advertiser(s) = 1
+Minimum Delay = 1
+Maximum Delay = 1
+Threshold = 1000000
+Start Time = 2022-05-09T04:14:00.057575500Z
+Finish Time = 2022-05-09T04:14:00.652734400Z

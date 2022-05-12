@@ -1,0 +1,8 @@
+Version = 1.0-SNAPSHOT
+Topology file = topo_attack.topo
+Advertiser(s) = 1
+Minimum Delay = 1
+Maximum Delay = 1
+Threshold = 1000000
+Start Time = 2022-05-12T08:26:18.018321800Z
+Finish Time = 2022-05-12T08:26:19.677861Z

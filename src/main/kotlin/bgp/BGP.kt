@@ -135,42 +135,53 @@ abstract class BaseBGP(private val mrai: Time, routingTable: RoutingTable<BGPRou
     private fun processASPA(selfNode: Node<*>, route: BGPRoute): BGPRoute {
         var relationPair = Pair("", "")
         // var nodePair = Pair("", "")
-        var preNode = ""
-        val links: ArrayList<*>
-        val relations = ArrayList<String>()
-        val asPath = route.asPath.append(selfNode)
-
-        /**
-         * 将链路反序列化，模拟从 RPKI 数据库获得签名的行为，由此实现路由源验证
-         */
-        try {
-            val fileIn = FileInputStream("./Serialization/topology.ser")
-            ObjectInputStream(fileIn).apply {
-                links = readObject() as ArrayList<*>
-                close()
-            }
-            fileIn.close()
-        } catch (i: IOException) {
-            i.printStackTrace()
-            throw IOException()
-        }
-
-        for (pathNode in asPath) {
-            // link: (发送节点，接收节点，链路关系)
-            for (link in links) {
-                // 注意！如果ASPath有误（被篡改等），或拓扑链路有误（RPKI不是最新的），将不会触发break，返回非法路由
-                if (link is Triple<*, *, *> && preNode == link.first.toString() && pathNode.id.toString() == link.second.toString()) {
-                    relations.add(link.third.toString())
-                    break
-                } else if (link == links.lastOrNull() && pathNode == asPath.lastOrNull())
-                    return BGPRoute.invalid()
-            }
-            preNode = pathNode.id.toString()
-        }
+//        var preNode = ""
+//        val links: ArrayList<*>
+//        val relations = ArrayList<String>()
+        // println("\n---------------------------------")
+        // println(route.asPath)
+        val relations = ArrayList(route.asPath.getRelations())
+        relations.removeAt(0)
         // println(relations)
+
+
+//        val asPath = route.asPath.append(selfNode)
+//        println(asPath)
+//
+//        /**
+//         * 将链路反序列化，模拟从 RPKI 数据库获得签名的行为，由此实现路由源验证
+//         */
+//        try {
+//            val fileIn = FileInputStream("./Serialization/topology.ser")
+//            ObjectInputStream(fileIn).apply {
+//                links = readObject() as ArrayList<*>
+//                close()
+//            }
+//            fileIn.close()
+//        } catch (i: IOException) {
+//            i.printStackTrace()
+//            throw IOException()
+//        }
+//
+//        for (pathNode in asPath) {
+//            // link: (发送节点，接收节点，链路关系)
+//            for (link in links) {
+//                // 注意！如果ASPath有误（被篡改等），或拓扑链路有误（RPKI不是最新的），将不会触发break，返回非法路由
+//                if (link is Triple<*, *, *> && preNode == link.first.toString() && pathNode.id.toString() == link.second.toString()) {
+//                    relations.add(link.third.toString())
+//                    break
+//                } else if (link == links.lastOrNull() && pathNode == asPath.lastOrNull())
+//                    return BGPRoute.invalid()
+//            }
+//            preNode = pathNode.id.toString()
+//        }
+//        println(relations)
+
         for (r in relations) {
             relationPair = Pair(relationPair.second, r)
             if (relationPair in leakingRelations) {
+                println()
+                println("防御成功！")
                 return BGPRoute.leakingRoute(leakingRelations.indexOf(relationPair), route.asPath)
             }
         }

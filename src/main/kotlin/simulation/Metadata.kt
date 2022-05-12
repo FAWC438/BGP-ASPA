@@ -1,13 +1,9 @@
 package simulation
 
 /**
- * Created on 09-11-2017
- *
- * @author David Fialho
- *
- * Container holding all key and value pairs that constitute the simulation run metadata.
+ * 包含构成模拟运行元数据的所有键和值对的容器。
  */
-class Metadata(version: String): Iterable<Pair<String, Any>> {
+class Metadata(version: String) : Iterable<Pair<String, Any>> {
 
     private val data = LinkedHashMap<String, Any>()
 
@@ -21,19 +17,19 @@ class Metadata(version: String): Iterable<Pair<String, Any>> {
 
     operator fun get(key: String): Any? = data[key]
 
-    // Iterator based on the map's iterator. It converts entries to pairs of key values
-    private class MetadataIterator(private val iterator: MutableIterator<MutableMap.MutableEntry<String, Any>>):
-            Iterator<Pair<String, Any>> {
+    // 基于地图的迭代器的迭代器。它将条目转换为键值对
+    private class MetadataIterator(private val iterator: MutableIterator<MutableMap.MutableEntry<String, Any>>) :
+        Iterator<Pair<String, Any>> {
 
         /**
-         * Returns `true` if the iteration has more elements.
+         * 如果迭代有更多元素，则返回 `true`。
          */
         override fun hasNext(): Boolean {
             return iterator.hasNext()
         }
 
         /**
-         * Returns the next element in the iteration.
+         * 返回迭代中的下一个元素。
          */
         override fun next(): Pair<String, Any> {
             val (key, value) = iterator.next()
@@ -43,7 +39,7 @@ class Metadata(version: String): Iterable<Pair<String, Any>> {
     }
 
     /**
-     * Returns an iterator over the elements of this object.
+     * 返回此对象的元素的迭代器。
      */
     override fun iterator(): Iterator<Pair<String, Any>> {
         return MetadataIterator(data.iterator())

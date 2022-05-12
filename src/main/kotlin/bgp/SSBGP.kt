@@ -7,30 +7,27 @@ import core.routing.RoutingTable
 import core.simulator.Time
 
 /**
- * Base class for the SS-BGP like protocols. Implements the deactivation of neighbors and leaves the detection
- * condition to the subclasses.
+ * 类似 SS-BGP 的协议的基类。实现邻居的停用并将检测条件留给子类。
  */
 abstract class BaseSSBGP(mrai: Time = 0, routingTable: RoutingTable<BGPRoute>): BaseBGP(mrai, routingTable) {
 
     /**
-     * Invoked the the BaseBGP right after a routing loop is detected.
+     * 在检测到路由环路后立即调用 BaseBGP。
      *
-     * An SS-BGP like protocol checks if the routing loop is recurrent and if so it deactivates the neighbor that
-     * sent the route.
+     * 类似于 SS-BGP 的协议会检查路由循环是否是循环的，如果是，它会停用发送路由的邻居。
      */
     final override fun onLoopDetected(node: Node<BGPRoute>, sender: Node<BGPRoute>, route: BGPRoute) {
 
-        // Ignore route learned from a disabled neighbor
+        // 忽略从禁用邻居那里学到的路由
         if (!routingTable.table.isEnabled(sender)) {
             return
         }
 
         val prevSelectedRoute = routingTable.getSelectedRoute()
 
-        // Since a loop routing was detected, the new route via the sender node is surely invalid
+        // 由于检测到环路路由，因此通过发送节点的新路由肯定是无效的
 
-        // Set the route via the sender as invalid
-        // This will force the selector to select the alternative route
+        // 将通过发送者的路由设置为无效这将强制选择器选择替代路由
         val updated = routingTable.update(sender, BGPRoute.invalid())
         wasSelectedRouteUpdated = wasSelectedRouteUpdated || updated
 
@@ -42,18 +39,17 @@ abstract class BaseSSBGP(mrai: Time = 0, routingTable: RoutingTable<BGPRoute>): 
     }
 
     /**
-     * Checks if the routing loop detected is recurrent.
-     * Subclasses must implement this method to define the detection condition.
+     * 检查检测到的路由循环是否经常发生。子类必须实现这个方法来定义检测条件。
      */
     protected abstract fun isRecurrent(node: Node<BGPRoute>, learnedRoute: BGPRoute,
                                        alternativeRoute: BGPRoute, prevSelectedRoute: BGPRoute): Boolean
 
     /**
-     * Enables the specified neighbor.
+     * 启用指定的邻居。
      *
-     * May update the `wasSelectedRouteUpdated` property.
+     * 可能会更新 `wasSelectedRouteUpdated` 属性。
      *
-     * @param neighbor the neighbor to enable
+     * @param neighbor 要启用的邻居
      */
     fun enableNeighbor(neighbor: Node<BGPRoute>) {
         val updated = routingTable.enable(neighbor)
@@ -61,11 +57,11 @@ abstract class BaseSSBGP(mrai: Time = 0, routingTable: RoutingTable<BGPRoute>): 
     }
 
     /**
-     * Disables the specified neighbor.
+     * 禁用指定的邻居。
      *
-     * May update the `wasSelectedRouteUpdated` property.
+     * 可能会更新 `wasSelectedRouteUpdated` 属性。
      *
-     * @param neighbor the neighbor to disable
+     * @param neighbor 要禁用的邻居
      */
     fun disableNeighbor(neighbor: Node<BGPRoute>) {
         val updated = routingTable.disable(neighbor)
@@ -78,8 +74,7 @@ abstract class BaseSSBGP(mrai: Time = 0, routingTable: RoutingTable<BGPRoute>): 
 }
 
 /**
- * SS-BGP Protocol: when a loop is detected it tries to detect if the loop is recurrent using the WEAK detection
- * condition. If it determines the loop is recurrent, it disables the neighbor that exported the route.
+ * SS-BGP Protocol: 当检测到循环时，它会尝试使用 WEAK 检测条件检测循环是否重复。如果它确定循环是重复的，它会禁用导出路由的邻居。
  */
 class SSBGP(mrai: Time = 0, routingTable: RoutingTable<BGPRoute> = RoutingTable.empty(BGPRoute.invalid()))
     : BaseSSBGP(mrai, routingTable) {
@@ -92,8 +87,7 @@ class SSBGP(mrai: Time = 0, routingTable: RoutingTable<BGPRoute> = RoutingTable.
 }
 
 /**
- * ISS-BGP: when a loop is detected it tries to detect if the loop is recurrent using the STRONG detection
- * condition. If it determines the loop is recurrent, it disables the neighbor that exported the route.
+ * ISS-BGP:当检测到循环时，它会尝试使用 STRONG 检测条件检测循环是否重复。如果它确定循环是重复的，它会禁用导出路由的邻居。
  */
 class ISSBGP(mrai: Time = 0, routingTable: RoutingTable<BGPRoute> = RoutingTable.empty(BGPRoute.invalid()))
     : BaseSSBGP(mrai, routingTable) {
@@ -107,7 +101,7 @@ class ISSBGP(mrai: Time = 0, routingTable: RoutingTable<BGPRoute> = RoutingTable
 }
 
 /**
- * SS-BGP version 2 Protocol: it uses a more generic detection condition than version 1.
+ * SS-BGP version 2 Protocol: 它使用比版本 1 更通用的检测条件。
  */
 class SSBGP2(mrai: Time = 0, routingTable: RoutingTable<BGPRoute> = RoutingTable.empty(BGPRoute.invalid()))
     : BaseSSBGP(mrai, routingTable) {
@@ -120,8 +114,7 @@ class SSBGP2(mrai: Time = 0, routingTable: RoutingTable<BGPRoute> = RoutingTable
 }
 
 /**
- * ISS-BGP version 2 Protocol: it uses the detection condition of SS-BGP2 and also checks if the tail of looping
- * path matches the path of the alternative route.
+ * ISS-BGP version 2 Protocol: 它使用 SS-BGP2 的检测条件，并检查循环路径的尾部是否与替代路由的路径匹配。
  */
 class ISSBGP2(mrai: Time = 0, routingTable: RoutingTable<BGPRoute> = RoutingTable.empty(BGPRoute.invalid()))
     : BaseSSBGP(mrai, routingTable) {

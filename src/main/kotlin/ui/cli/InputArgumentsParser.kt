@@ -15,7 +15,7 @@ import kotlin.system.exitProcess
 class InputArgumentsParser {
 
     companion object {
-        private const val MAIN_COMMAND = "ssbgp-simulator"
+        private const val MAIN_COMMAND = "bgp-simulator-for-ASPA"
 
         // 信息选项
         private const val HELP = "help"
@@ -198,7 +198,7 @@ class InputArgumentsParser {
         }
 
         if (commandLine.hasOption(VERSION)) {
-            println("SS-BGP Simulator: ${Simulator.version()}")
+            println("BGP Simulator for ASPA: ${Simulator.version()}")
             exitProcess(0)
         }
 

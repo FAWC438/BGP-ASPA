@@ -20,7 +20,8 @@ import kotlin.collections.ArrayList
  *
  */
 class Path internal constructor(
-    private val nodes: List<Node<*>>
+    private val nodes: List<Node<*>>,
+    private val relations: List<String>
 ) : Iterable<Node<*>> {
 
     val size: Int = nodes.size
@@ -32,20 +33,24 @@ class Path internal constructor(
         val nodesCopy = ArrayList(nodes)
         nodesCopy.add(node)
 
-        return Path(nodesCopy)
+        return Path(nodesCopy, listOf(""))
     }
 
-//    /**
-//     * 返回一个新的路径实例，其中 [node] 以及 [relation] 添加到（附加）此路径的末尾
-//     */
-//    fun append(node: Node<*>, relation: String): Path {
-//        val nodesCopy = ArrayList(nodes)
-//        val relationsCopy = ArrayList(relations)
-//        nodesCopy.add(node)
-//        relationsCopy.add(relation.lowercase(Locale.getDefault()))
-//
-//        return Path(nodesCopy, relationsCopy)
-//    }
+    /**
+     * 返回一个新的路径实例，其中 [node] 以及 [relation] 添加到（附加）此路径的末尾
+     */
+    fun append(node: Node<*>, relation: String): Path {
+        val nodesCopy = ArrayList(nodes)
+        val relationsCopy = ArrayList(relations)
+        nodesCopy.add(node)
+        relationsCopy.add(relation.lowercase(Locale.getDefault()))
+
+        return Path(nodesCopy, relationsCopy)
+    }
+
+    fun getRelations(): List<String> {
+        return relations
+    }
 
     /**
      * 返回路径下一跳节点。那是该路径末端的节点。如果路径为空，则返回 null。
@@ -62,14 +67,14 @@ class Path internal constructor(
     /**
      * 返回此路径的浅表副本。换句话说，以完全相同的顺序返回包含完全相同节点的路径实例。
      */
-    fun copy(): Path = Path(nodes)  // 这仅作为副本起作用，因为路径是不可变的
+    fun copy(): Path = Path(nodes, relations)  // 这仅作为副本起作用，因为路径是不可变的
 
     /**
      * 返回从路径开始到第一个节点等于 [node] 的子路径对应的路径。
      */
     fun subPathBefore(node: Node<*>): Path {
         val nodeIndex = nodes.indexOf(node)
-        return if (nodeIndex >= 0) Path(nodes.subList(0, nodeIndex)) else this
+        return if (nodeIndex >= 0) Path(nodes.subList(0, nodeIndex), relations.subList(0, nodeIndex)) else this
     }
 
     /**
@@ -113,7 +118,7 @@ class Path internal constructor(
 
     override fun toString(): String {
 //        return "$nodes | $relations"
-        return "$nodes"
+        return "$nodes | $relations"
     }
 
 }
@@ -121,12 +126,13 @@ class Path internal constructor(
 /**
  * 返回没有节点的路径。
  */
-fun emptyPath(): Path = Path(emptyList())
+fun emptyPath(): Path = Path(emptyList(), listOf(""))
 
 /**
  * 按照给定的顺序返回包含给定节点的路径。
+ * TODO: 同时返回关系
  */
-fun pathOf(vararg nodes: Node<*>): Path = Path(listOf(*nodes))
+fun pathOf(vararg nodes: Node<*>): Path = Path(listOf(*nodes), listOf(""))
 
 /**
  * 返回一个空路径。

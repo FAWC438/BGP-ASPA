@@ -10,13 +10,19 @@ object CustomerExtender : Extender<BGPRoute> {
     override fun extend(route: BGPRoute, sender: Node<BGPRoute>): BGPRoute {
 
         val localPref = when (sender.protocol.nodeType) {
-            2, 3 -> customerLocalPreference
+            2, 3 -> {
+//                println("\n---------\n")
+//                for (n in sender.inNeighbors) {
+//                    print("${n.node.id}|${n.extender} ")
+//                }
+                customerLocalPreference
+            }
             else -> route.localPref
         }
 
         return when {
             localPref <= peerLocalPreference -> BGPRoute.invalid()
-            else -> customerRoute(asPath = route.asPath.append(sender))
+            else -> customerRoute(asPath = route.asPath.append(sender, "c"))
         }
     }
 
@@ -30,13 +36,17 @@ object PeerExtender : Extender<BGPRoute> {
     override fun extend(route: BGPRoute, sender: Node<BGPRoute>): BGPRoute {
 
         val localPref = when (sender.protocol.nodeType) {
-            1, 3 -> customerLocalPreference
+            1, 3 -> {
+                // println("---------")
+                // println(sender.id)
+                customerLocalPreference
+            }
             else -> route.localPref
         }
 
         return when {
             localPref <= peerLocalPreference -> BGPRoute.invalid()
-            else -> peerRoute(asPath = route.asPath.append(sender))
+            else -> peerRoute(asPath = route.asPath.append(sender, "r"))
         }
     }
 
@@ -58,7 +68,7 @@ object ProviderExtender : Extender<BGPRoute> {
 //            else -> providerRoute(asPath = route.asPath.append(sender, "p"))
 
         // 所有情况下，都需要把路由导出给客户（通过供应商通道）
-        return providerRoute(asPath = route.asPath.append(sender))
+        return providerRoute(asPath = route.asPath.append(sender, "p"))
 
     }
 
